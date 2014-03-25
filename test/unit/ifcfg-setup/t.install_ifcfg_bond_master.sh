@@ -16,7 +16,7 @@ IFCFG_PATH_PREFIX=ifcfg-bond9
 ## functions
 
 function setUp() {
-  :
+  function install_ifcfg_file() { echo ${@}; }
 }
 
 function tearDown() {

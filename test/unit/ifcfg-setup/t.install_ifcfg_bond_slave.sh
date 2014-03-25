@@ -16,7 +16,7 @@ IFCFG_PATH_PREFIX=ifcfg-eth9
 ## functions
 
 function setUp() {
-  :
+  function install_ifcfg_file() { echo ${@}; }
 }
 
 function tearDown() {
