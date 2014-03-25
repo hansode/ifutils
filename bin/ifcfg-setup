@@ -1,0 +1,262 @@
+#!/bin/bash
+#
+# description:
+#
+# requires:
+#  bash
+#  tee, egrep, cat
+#
+
+## base
+
+function gen_ifcfg_path() {
+  local ifname=${1:-eth0}
+  local ifcfg_path=/etc/sysconfig/network-scripts/ifcfg
+
+  echo ${ifcfg_path}-${ifname}
+}
+
+function install_ifcfg_file() {
+  local ifname=${1:-eth0}
+
+  tee $(gen_ifcfg_path ${ifname}) </dev/stdin
+}
+
+# 0:       configure_${type}_conf optional
+# 1:    render_ifcfg_${type}      required
+# 2:   install_ifcfg_${type}      required
+# 3: configure_ifcfg_${type}_map  optional
+
+## driver/bonding
+
+### 0:
+
+function configure_bonding_conf() {
+  local ifname=${1:-bond0}
+
+  local config_path=/etc/modprobe.d/bonding.conf
+  local entry="alias ${ifname} bonding"
+
+  if [[ ! -f ${config_path} ]]; then
+    : > ${config_path}
+  fi
+  egrep -q -w "^${entry}" ${config_path} || {
+    echo ${entry} >> ${config_path}
+  }
+}
+
+### 1:master
+
+function render_ifcfg_bond_master() {
+  local ifname=${1:-bond0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  local bond_opts="mode=${mode:-1}"
+  local bond_params="
+    max_bonds
+    num_grat_arp
+    num_unsol_na
+    miimon
+    updelay
+    downdelay
+    use_carrier
+    primary
+    lacp_rate
+    ad_select
+    xmit_hash_policy
+    arp_interval
+    arp_ip_target
+    arp_validate
+    fail_over_mac
+  "
+
+  local __param
+  for __param in ${bond_params}; do
+    eval "
+      [[ -z "\$${__param}" ]] || bond_opts=\"\${bond_opts} \${__param}=\$${__param}\"
+    "
+  done
+
+  cat <<-EOS
+	DEVICE=${ifname}
+	ONBOOT=yes
+	BOOTPROTO=none
+	BONDING_OPTS="${bond_opts}"
+	EOS
+}
+
+### 2:master
+
+function install_ifcfg_bond_master() {
+  local ifname=${1:-bond0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_bond_master ${ifname} mode=${mode} | install_ifcfg_file ${ifname}
+}
+
+### 1:slave
+
+function render_ifcfg_bond_slave() {
+  local ifname=${1:-eth0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  cat <<-EOS
+	DEVICE=${ifname}
+	BOOTPROTO=none
+	ONBOOT=yes
+	MASTER=${master}
+	SLAVE=yes
+	EOS
+}
+
+### 2:slave
+
+function install_ifcfg_bond_slave() {
+  local ifname=${1:-eth0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_bond_slave ${ifname} master=${master} | install_ifcfg_file ${ifname}
+}
+
+### 3:
+
+function configure_ifcfg_bond_map() {
+  local ifname=${1:-bond0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  configure_bonding_conf    ${ifname}
+  install_ifcfg_bond_master ${ifname} mode=${mode}
+  install_ifcfg_bond_slave  ${slave}  master=${ifname}
+}
+
+## net/bridge
+
+### 1:
+
+function render_ifcfg_bridge() {
+  local ifname=${1:-br0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  cat <<-EOS
+	DEVICE=${ifname}
+	TYPE=Bridge
+	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	BOOTPROTO=none
+	ONBOOT=yes
+	EOS
+}
+
+### 2:
+
+function install_ifcfg_bridge() {
+  local ifname=${1:-br0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_bridge ${ifname} address=${address} | install_ifcfg_file ${ifname}
+}
+
+### 3:
+
+function configure_ifcfg_bridge_map() {
+  local ifname=${1:-br0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  install_ifcfg_bridge ${ifname} "${@}"
+
+  local config_path=$(gen_ifcfg_path ${slave})
+  local entry="BRIDGE=${ifname}"
+
+  if [[ ! -f ${config_path} ]]; then
+    : > ${config_path}
+  fi
+  egrep -q -w "^${entry}" ${config_path} || {
+    echo ${entry} >> ${config_path}
+  }
+}
+
+## net/8021q
+
+### 0:
+
+function configure_vlan_conf() {
+  local line
+
+  local config_path=/etc/sysconfig/network
+  while read line; do
+    set ${line}
+    if ! egrep -q -w "^${line}" ${config_path}; then
+      echo ${line} >> ${config_path}
+    fi
+  done < <(cat <<-EOS
+	VLAN=yes
+	VLAN_NAME_TYPE=VLAN_PLUS_VID_NO_PAD
+	EOS
+  )
+}
+
+### 1:
+
+function render_ifcfg_vlan() {
+  local ifname=${1:-vlan1000}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  cat <<-EOS
+	DEVICE=${ifname}
+	BOOTPROTO=none
+	ONBOOT=yes
+	EOS
+}
+
+### 2:
+
+function install_ifcfg_vlan() {
+  local ifname=${1:-vlan1000}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_vlan ${ifname} | install_ifcfg_file ${ifname}
+}
+
+### 3:
+
+function configure_ifcfg_vlan_map() {
+  local ifname=${1:-vlan1000}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  install_ifcfg_vlan ${ifname}
+
+  local config_path=$(gen_ifcfg_path ${ifname})
+  local entry="PHYSDEV=${physdev}"
+
+  if [[ ! -f ${config_path} ]]; then
+    : > ${config_path}
+  fi
+  egrep -q -w "^${entry}" ${config_path} || {
+    echo ${entry} >> ${config_path}
+  }
+}
+
+## net/tap
+
+### 1:
+
+function render_ifcfg_tap() {
+  local ifname=${1:-tap0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  cat <<-EOS
+	DEVICE=${ifname}
+	TYPE=Tap
+	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	BOOTPROTO=none
+	ONBOOT=yes
+	EOS
+}
+
+### 2:
+
+function install_ifcfg_tap() {
+  local ifname=${1:-tap0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_tap ${ifname} address=${address} | install_ifcfg_file ${ifname}
+}
