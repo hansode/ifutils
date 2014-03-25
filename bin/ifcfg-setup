@@ -26,6 +26,10 @@ function install_ifcfg_file() {
   tee $(gen_ifcfg_path ${ifname}) </dev/stdin
 }
 
+function beautify_config_body() {
+  cat | egrep -v '^#|^$'
+}
+
 # 0:       configure_${type}_conf optional
 # 1:    render_ifcfg_${type}      required
 # 2:   install_ifcfg_${type}      required
@@ -39,7 +43,7 @@ function render_ifcfg_eth() {
   local ifname=${1:-eth0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Ethernet
 	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
@@ -110,7 +114,7 @@ function render_ifcfg_bond_master() {
     "
   done
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	ONBOOT=yes
 	BOOTPROTO=none
@@ -133,7 +137,7 @@ function render_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	BOOTPROTO=none
 	ONBOOT=yes
@@ -170,7 +174,7 @@ function render_ifcfg_bridge() {
   local ifname=${1:-br0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Bridge
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
@@ -220,7 +224,7 @@ function configure_vlan_conf() {
     if ! egrep -q -w "^${line}" ${config_path}; then
       echo ${line} >> ${config_path}
     fi
-  done < <(cat <<-EOS | egrep -v '^#|^$'
+  done < <(beautify_config_body <<-EOS
 	VLAN=yes
 	VLAN_NAME_TYPE=VLAN_PLUS_VID_NO_PAD
 	EOS
@@ -233,7 +237,7 @@ function render_ifcfg_vlan() {
   local ifname=${1:-vlan1000}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	BOOTPROTO=none
 	ONBOOT=yes
@@ -276,7 +280,7 @@ function render_ifcfg_tap() {
   local ifname=${1:-tap0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS | egrep -v '^#|^$'
+  beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Tap
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
