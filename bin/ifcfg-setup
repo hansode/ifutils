@@ -9,9 +9,11 @@
 
 ## base
 
+IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
+
 function gen_ifcfg_path() {
   local ifname=${1:-eth0}
-  local ifcfg_path=/etc/sysconfig/network-scripts/ifcfg
+  local ifcfg_path=${IFCFG_PATH_PREFIX}
 
   echo ${ifcfg_path}-${ifname}
 }
