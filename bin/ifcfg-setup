@@ -31,6 +31,35 @@ function install_ifcfg_file() {
 # 2:   install_ifcfg_${type}      required
 # 3: configure_ifcfg_${type}_map  optional
 
+## net/ethernet
+
+### 1:
+
+function render_ifcfg_eth() {
+  local ifname=${1:-eth0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  cat <<-EOS | egrep -v '^#|^$'
+	DEVICE=${ifname}
+	TYPE=Ethernet
+	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
+	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
+	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
+	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
+	BOOTPROTO=none
+	ONBOOT=yes
+	EOS
+}
+
+### 2:
+
+function install_ifcfg_eth() {
+  local ifname=${1:-eth0}
+  shift; [[ ${#} == 0 ]] || eval local "${@}"
+
+  render_ifcfg_eth ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} | install_ifcfg_file ${ifname}
+}
+
 ## driver/bonding
 
 ### 0:
