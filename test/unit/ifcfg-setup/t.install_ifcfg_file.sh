@@ -29,7 +29,6 @@ function test_install_ifcfg_file_no_opts() {
 
 function test_install_ifcfg_file_opts() {
   assertEquals "/etc/sysconfig/network-scripts/ifcfg-${ifname}" "$(install_ifcfg_file ${ifname} </dev/null)"
-  assertEquals 0 ${?}
 }
 
 ## shunit2
