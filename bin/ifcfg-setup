@@ -46,11 +46,11 @@ function render_ifcfg_eth() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Ethernet
+	BOOTPROTO=none
 	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
 	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
 	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
 	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
-	BOOTPROTO=none
 	ONBOOT=yes
 	EOS
 }
@@ -116,9 +116,9 @@ function render_ifcfg_bond_master() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	ONBOOT=yes
 	BOOTPROTO=none
 	BONDING_OPTS="${bond_opts}"
+	ONBOOT=yes
 	EOS
 }
 
@@ -140,9 +140,9 @@ function render_ifcfg_bond_slave() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	BOOTPROTO=none
-	ONBOOT=yes
 	MASTER=${master}
 	SLAVE=yes
+	ONBOOT=yes
 	EOS
 }
 
@@ -177,8 +177,8 @@ function render_ifcfg_bridge() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Bridge
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	BOOTPROTO=none
+	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	ONBOOT=yes
 	EOS
 }
@@ -283,8 +283,8 @@ function render_ifcfg_tap() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Tap
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	BOOTPROTO=none
+	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	ONBOOT=yes
 	EOS
 }

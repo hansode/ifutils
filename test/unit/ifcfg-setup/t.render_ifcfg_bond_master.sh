@@ -24,26 +24,26 @@ function tearDown() {
 
 function test_render_ifcfg_bond_master_no_opts() {
   local body="DEVICE=bond0
-ONBOOT=yes
 BOOTPROTO=none
-BONDING_OPTS=\"mode=1\""
+BONDING_OPTS=\"mode=1\"
+ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bond_master)"
 }
 
 function test_render_ifcfg_bond_master_opts() {
   local body="DEVICE=${ifname}
-ONBOOT=yes
 BOOTPROTO=none
-BONDING_OPTS=\"mode=1\""
+BONDING_OPTS=\"mode=1\"
+ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bond_master ${ifname})"
 }
 
 function test_render_ifcfg_bond_master_opts_mode() {
   local mode=2
   local body="DEVICE=${ifname}
-ONBOOT=yes
 BOOTPROTO=none
-BONDING_OPTS=\"mode=${mode}\""
+BONDING_OPTS=\"mode=${mode}\"
+ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bond_master ${ifname} mode=${mode})"
 }
 
