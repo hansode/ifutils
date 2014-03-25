@@ -42,8 +42,8 @@ function test_render_ifcfg_eth_opts_ip() {
   local ip=192.0.2.10
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-IPADDR=${ip}
 BOOTPROTO=none
+IPADDR=${ip}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
 }
@@ -52,8 +52,8 @@ function test_render_ifcfg_eth_opts_mask() {
   local mask=255.255.255.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-NETMASK=${mask}
 BOOTPROTO=none
+NETMASK=${mask}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
 }
@@ -62,8 +62,8 @@ function test_render_ifcfg_eth_opts_net() {
   local net=192.0.2.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-NETWORK=${net}
 BOOTPROTO=none
+NETWORK=${net}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
 }
@@ -72,8 +72,8 @@ function test_render_ifcfg_eth_opts_bcast() {
   local bcast=192.0.2.255
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BROADCAST=${bcast}
 BOOTPROTO=none
+BROADCAST=${bcast}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
 }

@@ -42,8 +42,8 @@ function test_render_ifcfg_bridge_opts_address() {
   local address=fe:ff:ff:ff:ff:ff
   local body="DEVICE=${ifname}
 TYPE=Bridge
-MACADDR=${address}
 BOOTPROTO=none
+MACADDR=${address}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"
 }
