@@ -9,9 +9,13 @@
 
 ## base
 
+IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
+IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
+IFCFG_VLAN_CONF_PATH=${IFCFG_VLAN_CONF_PATH:-/etc/sysconfig/network}
+
 function gen_ifcfg_path() {
   local ifname=${1:-eth0}
-  local ifcfg_path=/etc/sysconfig/network-scripts/ifcfg
+  local ifcfg_path=${IFCFG_PATH_PREFIX}
 
   echo ${ifcfg_path}-${ifname}
 }
@@ -34,7 +38,7 @@ function install_ifcfg_file() {
 function configure_bonding_conf() {
   local ifname=${1:-bond0}
 
-  local config_path=/etc/modprobe.d/bonding.conf
+  local config_path=${IFCFG_BONDING_CONF_PATH}
   local entry="alias ${ifname} bonding"
 
   if [[ ! -f ${config_path} ]]; then
@@ -181,7 +185,7 @@ function configure_ifcfg_bridge_map() {
 function configure_vlan_conf() {
   local line
 
-  local config_path=/etc/sysconfig/network
+  local config_path=${IFCFG_VLAN_CONF_PATH}
   while read line; do
     set ${line}
     if ! egrep -q -w "^${line}" ${config_path}; then
