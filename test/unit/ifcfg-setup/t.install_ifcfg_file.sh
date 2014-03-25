@@ -16,7 +16,7 @@ declare ifname=eth0
 
 function setUp() {
   function gen_file_path() { echo /dev/stdout; }
-  function tee() { echo tee ${@}; }
+  function tee() { echo ${@}; }
 }
 
 function tearDown() {
