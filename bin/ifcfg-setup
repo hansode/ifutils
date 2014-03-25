@@ -10,6 +10,7 @@
 ## base
 
 IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
+IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
 
 function gen_ifcfg_path() {
   local ifname=${1:-eth0}
@@ -36,7 +37,7 @@ function install_ifcfg_file() {
 function configure_bonding_conf() {
   local ifname=${1:-bond0}
 
-  local config_path=/etc/modprobe.d/bonding.conf
+  local config_path=${IFCFG_BONDING_CONF_PATH}
   local entry="alias ${ifname} bonding"
 
   if [[ ! -f ${config_path} ]]; then
