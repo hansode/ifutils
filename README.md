@@ -1,7 +1,7 @@
 ifcfg-setup
 ===========
 
-[![Build Status](https://travis-ci.org/hansode/ifcfg-setup.png)](https://travis-ci.org/hansode/ifcfg-setup)
+[![Build Status](https://travis-ci.org/hansode/ifcfg-setup.svg)](https://travis-ci.org/hansode/ifcfg-setup)
 
 Requirements
 ------------
