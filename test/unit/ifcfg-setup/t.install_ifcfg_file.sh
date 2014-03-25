@@ -16,7 +16,7 @@ declare ifname=eth0
 
 function setUp() {
   function gen_file_path() { echo /dev/stdout; }
-  function tee() { echo tee ${@}; }
+  function tee() { echo ${@}; }
 }
 
 function tearDown() {
@@ -24,12 +24,11 @@ function tearDown() {
 }
 
 function test_install_ifcfg_file_no_opts() {
-  assertEquals $(install_ifcfg_file </dev/null) "/etc/sysconfig/network-scripts/ifcfg-${ifname}"
+  assertEquals "/etc/sysconfig/network-scripts/ifcfg-${ifname}" "$(install_ifcfg_file </dev/null)"
 }
 
 function test_install_ifcfg_file_opts() {
-  assertEquals $(install_ifcfg_file ${ifname} </dev/null) "/etc/sysconfig/network-scripts/ifcfg-${ifname}"
-  assertEquals 0 ${?}
+  assertEquals "/etc/sysconfig/network-scripts/ifcfg-${ifname}" "$(install_ifcfg_file ${ifname} </dev/null)"
 }
 
 ## shunit2
