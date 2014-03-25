@@ -11,6 +11,7 @@
 ## variables
 
 declare ifname=eth0
+declare ifcfg_path_prefix=/etc/sysconfig/network-scripts/ifcfg
 
 ## functions
 
@@ -23,11 +24,11 @@ function tearDown() {
 }
 
 function test_gen_ifcfg_path_no_opts() {
-  assertEquals $(gen_ifcfg_path) /etc/sysconfig/network-scripts/ifcfg-${ifname}
+  assertEquals $(gen_ifcfg_path) ${ifcfg_path_prefix}-${ifname}
 }
 
 function test_gen_ifcfg_path_opts() {
-  assertEquals $(gen_ifcfg_path ${ifname}) /etc/sysconfig/network-scripts/ifcfg-${ifname}
+  assertEquals $(gen_ifcfg_path ${ifname}) ${ifcfg_path_prefix}-${ifname}
 }
 
 ## shunit2
