@@ -25,7 +25,6 @@ function tearDown() {
 function test_render_ifcfg_tap_no_opts() {
   local body="DEVICE=tap0
 TYPE=Tap
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_tap)"
@@ -34,7 +33,6 @@ ONBOOT=yes"
 function test_render_ifcfg_tap_opts() {
   local body="DEVICE=${ifname}
 TYPE=Tap
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_tap ${ifname})"
@@ -44,7 +42,7 @@ function test_render_ifcfg_tap_opts_address() {
   local address=fe:ff:ff:ff:ff:ff
   local body="DEVICE=${ifname}
 TYPE=Tap
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+MACADDR=${address}
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_tap ${ifname})"

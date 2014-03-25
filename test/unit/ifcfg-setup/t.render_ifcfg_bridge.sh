@@ -25,7 +25,6 @@ function tearDown() {
 function test_render_ifcfg_bridge_no_opts() {
   local body="DEVICE=br0
 TYPE=Bridge
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bridge)"
@@ -34,7 +33,6 @@ ONBOOT=yes"
 function test_render_ifcfg_bridge_opts() {
   local body="DEVICE=${ifname}
 TYPE=Bridge
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"
@@ -44,7 +42,7 @@ function test_render_ifcfg_bridge_opts_address() {
   local address=fe:ff:ff:ff:ff:ff
   local body="DEVICE=${ifname}
 TYPE=Bridge
-$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+MACADDR=${address}
 BOOTPROTO=none
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"

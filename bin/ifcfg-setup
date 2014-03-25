@@ -110,7 +110,7 @@ function render_ifcfg_bond_master() {
     "
   done
 
-  cat <<-EOS
+  cat <<-EOS | egrep -v '^#|^$'
 	DEVICE=${ifname}
 	ONBOOT=yes
 	BOOTPROTO=none
@@ -133,7 +133,7 @@ function render_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS
+  cat <<-EOS | egrep -v '^#|^$'
 	DEVICE=${ifname}
 	BOOTPROTO=none
 	ONBOOT=yes
@@ -170,7 +170,7 @@ function render_ifcfg_bridge() {
   local ifname=${1:-br0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS
+  cat <<-EOS | egrep -v '^#|^$'
 	DEVICE=${ifname}
 	TYPE=Bridge
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
@@ -220,7 +220,7 @@ function configure_vlan_conf() {
     if ! egrep -q -w "^${line}" ${config_path}; then
       echo ${line} >> ${config_path}
     fi
-  done < <(cat <<-EOS
+  done < <(cat <<-EOS | egrep -v '^#|^$'
 	VLAN=yes
 	VLAN_NAME_TYPE=VLAN_PLUS_VID_NO_PAD
 	EOS
@@ -233,7 +233,7 @@ function render_ifcfg_vlan() {
   local ifname=${1:-vlan1000}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS
+  cat <<-EOS | egrep -v '^#|^$'
 	DEVICE=${ifname}
 	BOOTPROTO=none
 	ONBOOT=yes
@@ -276,7 +276,7 @@ function render_ifcfg_tap() {
   local ifname=${1:-tap0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  cat <<-EOS
+  cat <<-EOS | egrep -v '^#|^$'
 	DEVICE=${ifname}
 	TYPE=Tap
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
