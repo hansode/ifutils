@@ -155,7 +155,11 @@ function render_ifcfg_bond_master() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	BONDING_OPTS="${bond_opts}"
 	EOS
 
@@ -183,7 +187,11 @@ function render_ifcfg_bond_slave() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	MASTER=${master}
 	SLAVE=yes
 	EOS
@@ -294,8 +302,9 @@ function render_ifcfg_vlan() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
 	EOS
+
+  render_ifcfg_network_configuration "${@}"
 
   beautify_config_body <<-EOS
 	ONBOOT=${onboot:-yes}
