@@ -41,6 +41,21 @@ function config_line_in_file() {
   }
 }
 
+function render_ifcfg_network_configuration() {
+  unset ip mask net bcast gw
+  # don't use "shift" here
+  [[ ${#} == 0 ]] || eval local "${@}"
+
+  beautify_config_body <<-EOS
+	BOOTPROTO=static
+	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
+	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
+	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
+	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
+	$([[ -z "${gw}"    ]] || echo "GATEWAY=${gw}")
+	EOS
+}
+
 # 0:       configure_${type}_conf optional
 # 1:    render_ifcfg_${type}      required
 # 2:   install_ifcfg_${type}      required
@@ -58,12 +73,11 @@ function render_ifcfg_ethernet() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Ethernet
-	BOOTPROTO=static
-	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
-	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
-	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
-	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
-	$([[ -z "${gw}"    ]] || echo "GATEWAY=${gw}")
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
