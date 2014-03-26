@@ -78,6 +78,16 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
 }
 
+function test_render_ifcfg_eth_opts_gw() {
+  local gw=192.0.2.1
+  local body="DEVICE=${ifname}
+TYPE=Ethernet
+BOOTPROTO=none
+GATEWAY=${gw}
+ONBOOT=yes"
+  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+}
+
 ## shunit2
 
 . ${shunit2_file}
