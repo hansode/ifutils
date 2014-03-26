@@ -82,7 +82,7 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local ifname=${1:-eth0}
-  unset ip mask net bcast gw
+  unset ip mask net bcast gw onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -93,7 +93,7 @@ function render_ifcfg_ethernet() {
   render_ifcfg_network_configuration "${@}"
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
@@ -124,7 +124,7 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bond_master() {
   local ifname=${1:-bond0}
-  unset mode
+  unset mode onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
@@ -160,7 +160,7 @@ function render_ifcfg_bond_master() {
 	EOS
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
@@ -178,7 +178,7 @@ function install_ifcfg_bond_master() {
 
 function render_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
-  unset master
+  unset master onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -189,7 +189,7 @@ function render_ifcfg_bond_slave() {
 	EOS
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
@@ -221,7 +221,7 @@ function configure_ifcfg_bond_map() {
 
 function render_ifcfg_bridge() {
   local ifname=${1:-br0}
-  unset address
+  unset address onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -236,7 +236,7 @@ function render_ifcfg_bridge() {
 	EOS
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
@@ -289,6 +289,7 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local ifname=${1:-vlan1000}
+  unset onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -297,7 +298,7 @@ function render_ifcfg_vlan() {
 	EOS
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
@@ -346,7 +347,7 @@ function render_ifcfg_tap() {
 	EOS
 
   beautify_config_body <<-EOS
-	ONBOOT=yes
+	ONBOOT=${onboot:-yes}
 	EOS
 }
 
