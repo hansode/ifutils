@@ -227,7 +227,11 @@ function render_ifcfg_bridge() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Bridge
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	EOS
 
@@ -333,7 +337,11 @@ function render_ifcfg_tap() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Tap
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	EOS
 
