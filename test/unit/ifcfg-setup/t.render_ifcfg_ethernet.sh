@@ -25,7 +25,7 @@ function tearDown() {
 function test_render_ifcfg_ethernet_no_opts() {
   local body="DEVICE=eth0
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet)"
 }
@@ -33,7 +33,7 @@ ONBOOT=yes"
 function test_render_ifcfg_ethernet_opts() {
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
@@ -42,7 +42,7 @@ function test_render_ifcfg_ethernet_opts_ip() {
   local ip=192.0.2.10
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 IPADDR=${ip}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
@@ -52,7 +52,7 @@ function test_render_ifcfg_ethernet_opts_mask() {
   local mask=255.255.255.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 NETMASK=${mask}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
@@ -62,7 +62,7 @@ function test_render_ifcfg_ethernet_opts_net() {
   local net=192.0.2.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 NETWORK=${net}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
@@ -72,7 +72,7 @@ function test_render_ifcfg_ethernet_opts_bcast() {
   local bcast=192.0.2.255
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 BROADCAST=${bcast}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
@@ -82,7 +82,7 @@ function test_render_ifcfg_ethernet_opts_gw() {
   local gw=192.0.2.1
   local body="DEVICE=${ifname}
 TYPE=Ethernet
-BOOTPROTO=none
+BOOTPROTO=static
 GATEWAY=${gw}
 ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"

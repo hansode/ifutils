@@ -57,7 +57,7 @@ function render_ifcfg_ethernet() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Ethernet
-	BOOTPROTO=none
+	BOOTPROTO=static
 	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
 	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
 	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
