@@ -22,70 +22,70 @@ function tearDown() {
   :
 }
 
-function test_render_ifcfg_eth_no_opts() {
+function test_render_ifcfg_ethernet_no_opts() {
   local body="DEVICE=eth0
 TYPE=Ethernet
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth)"
+  assertEquals "${body}" "$(render_ifcfg_ethernet)"
 }
 
-function test_render_ifcfg_eth_opts() {
+function test_render_ifcfg_ethernet_opts() {
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
-function test_render_ifcfg_eth_opts_ip() {
+function test_render_ifcfg_ethernet_opts_ip() {
   local ip=192.0.2.10
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 IPADDR=${ip}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
-function test_render_ifcfg_eth_opts_mask() {
+function test_render_ifcfg_ethernet_opts_mask() {
   local mask=255.255.255.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 NETMASK=${mask}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
-function test_render_ifcfg_eth_opts_net() {
+function test_render_ifcfg_ethernet_opts_net() {
   local net=192.0.2.0
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 NETWORK=${net}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
-function test_render_ifcfg_eth_opts_bcast() {
+function test_render_ifcfg_ethernet_opts_bcast() {
   local bcast=192.0.2.255
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 BROADCAST=${bcast}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
-function test_render_ifcfg_eth_opts_gw() {
+function test_render_ifcfg_ethernet_opts_gw() {
   local gw=192.0.2.1
   local body="DEVICE=${ifname}
 TYPE=Ethernet
 BOOTPROTO=none
 GATEWAY=${gw}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_eth ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
 ## shunit2

@@ -50,7 +50,7 @@ function config_line_in_file() {
 
 ### 1:
 
-function render_ifcfg_eth() {
+function render_ifcfg_ethernet() {
   local ifname=${1:-eth0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -69,11 +69,11 @@ function render_ifcfg_eth() {
 
 ### 2:
 
-function install_ifcfg_eth() {
+function install_ifcfg_ethernet() {
   local ifname=${1:-eth0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_eth ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} | install_ifcfg_file ${ifname}
+  render_ifcfg_ethernet ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} | install_ifcfg_file ${ifname}
 }
 
 ## driver/bonding
