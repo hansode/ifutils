@@ -45,7 +45,7 @@ TYPE=Tap
 BOOTPROTO=none
 MACADDR=${address}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_tap ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_tap ${ifname} address=${address})"
 }
 
 ## shunit2

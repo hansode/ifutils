@@ -45,7 +45,7 @@ TYPE=Ethernet
 BOOTPROTO=static
 IPADDR=${ip}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} ip=${ip})"
 }
 
 function test_render_ifcfg_ethernet_opts_mask() {
@@ -55,7 +55,7 @@ TYPE=Ethernet
 BOOTPROTO=static
 NETMASK=${mask}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} mask=${mask})"
 }
 
 function test_render_ifcfg_ethernet_opts_net() {
@@ -65,7 +65,7 @@ TYPE=Ethernet
 BOOTPROTO=static
 NETWORK=${net}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} net=${net})"
 }
 
 function test_render_ifcfg_ethernet_opts_bcast() {
@@ -75,7 +75,7 @@ TYPE=Ethernet
 BOOTPROTO=static
 BROADCAST=${bcast}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} bcast=${bcast})"
 }
 
 function test_render_ifcfg_ethernet_opts_gw() {
@@ -85,7 +85,7 @@ TYPE=Ethernet
 BOOTPROTO=static
 GATEWAY=${gw}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} gw=${gw})"
 }
 
 ## shunit2

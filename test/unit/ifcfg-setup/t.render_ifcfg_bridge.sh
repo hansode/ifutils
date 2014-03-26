@@ -45,7 +45,7 @@ TYPE=Bridge
 BOOTPROTO=none
 MACADDR=${address}
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname} address=${address})"
 }
 
 ## shunit2

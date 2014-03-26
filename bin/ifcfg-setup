@@ -52,6 +52,7 @@ function config_line_in_file() {
 
 function render_ifcfg_ethernet() {
   local ifname=${1:-eth0}
+  unset ip mask net bcast gw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -71,6 +72,7 @@ function render_ifcfg_ethernet() {
 
 function install_ifcfg_ethernet() {
   local ifname=${1:-eth0}
+  unset ip mask net bcast gw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_ethernet ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} | install_ifcfg_file ${ifname}
@@ -93,6 +95,7 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bond_master() {
   local ifname=${1:-bond0}
+  unset mode
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
@@ -133,6 +136,7 @@ function render_ifcfg_bond_master() {
 
 function install_ifcfg_bond_master() {
   local ifname=${1:-bond0}
+  unset mode
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_master ${ifname} mode=${mode} | install_ifcfg_file ${ifname}
@@ -142,6 +146,7 @@ function install_ifcfg_bond_master() {
 
 function render_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
+  unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -157,6 +162,7 @@ function render_ifcfg_bond_slave() {
 
 function install_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
+  unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_slave ${ifname} master=${master} | install_ifcfg_file ${ifname}
@@ -166,6 +172,7 @@ function install_ifcfg_bond_slave() {
 
 function configure_ifcfg_bond_map() {
   local ifname=${1:-bond0}
+  unset mode master slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${ifname}
@@ -179,6 +186,7 @@ function configure_ifcfg_bond_map() {
 
 function render_ifcfg_bridge() {
   local ifname=${1:-br0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -194,6 +202,7 @@ function render_ifcfg_bridge() {
 
 function install_ifcfg_bridge() {
   local ifname=${1:-br0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bridge ${ifname} address=${address} | install_ifcfg_file ${ifname}
@@ -203,6 +212,7 @@ function install_ifcfg_bridge() {
 
 function configure_ifcfg_bridge_map() {
   local ifname=${1:-br0}
+  local slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${ifname} "${@}"
@@ -259,6 +269,7 @@ function install_ifcfg_vlan() {
 
 function configure_ifcfg_vlan_map() {
   local ifname=${1:-vlan1000}
+  local physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_vlan ${ifname}
@@ -275,6 +286,7 @@ function configure_ifcfg_vlan_map() {
 
 function render_ifcfg_tap() {
   local ifname=${1:-tap0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -290,6 +302,7 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local ifname=${1:-tap0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${ifname} address=${address} | install_ifcfg_file ${ifname}
