@@ -46,12 +46,10 @@ function render_ifcfg_network_configuration() {
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
-  local bootproto
+  local bootproto=none
 
   if [[ -n "${ip}" ]]; then
     bootproto=static
-  else
-    bootproto=none
   fi
 
   beautify_config_body <<-EOS
