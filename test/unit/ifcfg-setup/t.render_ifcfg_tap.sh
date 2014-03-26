@@ -39,12 +39,10 @@ ONBOOT=yes"
 }
 
 function test_render_ifcfg_tap_opts_address() {
-  local address=fe:ff:ff:ff:ff:ff
   local body="DEVICE=${ifname}
 TYPE=Tap
 BOOTPROTO=none
-ONBOOT=yes
-MACADDR=${address}"
+ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_tap ${ifname} address=${address})"
 }
 
