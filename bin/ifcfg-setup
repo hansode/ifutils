@@ -30,6 +30,17 @@ function beautify_config_body() {
   cat | egrep -v '^#|^$'
 }
 
+function config_line_in_file() {
+  local config_path=${1} entry=${2}
+
+  if [[ ! -f "${config_path}" ]]; then
+    : > ${config_path}
+  fi
+  egrep -q -w "^${entry}" ${config_path} || {
+    echo ${entry} >> ${config_path}
+  }
+}
+
 # 0:       configure_${type}_conf optional
 # 1:    render_ifcfg_${type}      required
 # 2:   install_ifcfg_${type}      required
@@ -74,12 +85,7 @@ function configure_bonding_conf() {
   local config_path=${IFCFG_BONDING_CONF_PATH}
   local entry="alias ${ifname} bonding"
 
-  if [[ ! -f ${config_path} ]]; then
-    : > ${config_path}
-  fi
-  egrep -q -w "^${entry}" ${config_path} || {
-    echo ${entry} >> ${config_path}
-  }
+  config_line_in_file ${config_path} "${entry}"
 }
 
 ### 1:master
@@ -203,12 +209,7 @@ function configure_ifcfg_bridge_map() {
   local config_path=$(gen_ifcfg_path ${slave})
   local entry="BRIDGE=${ifname}"
 
-  if [[ ! -f ${config_path} ]]; then
-    : > ${config_path}
-  fi
-  egrep -q -w "^${entry}" ${config_path} || {
-    echo ${entry} >> ${config_path}
-  }
+  config_line_in_file ${config_path} "${entry}"
 }
 
 ## net/8021q
@@ -264,12 +265,7 @@ function configure_ifcfg_vlan_map() {
   local config_path=$(gen_ifcfg_path ${ifname})
   local entry="PHYSDEV=${physdev}"
 
-  if [[ ! -f ${config_path} ]]; then
-    : > ${config_path}
-  fi
-  egrep -q -w "^${entry}" ${config_path} || {
-    echo ${entry} >> ${config_path}
-  }
+  config_line_in_file ${config_path} "${entry}"
 }
 
 ## net/tap
