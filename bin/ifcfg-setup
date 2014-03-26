@@ -42,7 +42,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot ip mask net bcast gw
+  unset onboot ip mask net bcast gw address
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -55,6 +55,7 @@ function render_ifcfg_network_configuration() {
   beautify_config_body <<-EOS
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
+	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
 	EOS
 
   case ${bootproto} in
@@ -216,7 +217,6 @@ function configure_ifcfg_bond_map() {
 
 function render_ifcfg_bridge() {
   local ifname=${1:-br0}
-  unset address onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -225,10 +225,6 @@ function render_ifcfg_bridge() {
 	EOS
 
   render_ifcfg_network_configuration "${@}"
-
-  beautify_config_body <<-EOS
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
-	EOS
 }
 
 ### 2:
@@ -320,7 +316,6 @@ function configure_ifcfg_vlan_map() {
 
 function render_ifcfg_tap() {
   local ifname=${1:-tap0}
-  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
@@ -329,10 +324,6 @@ function render_ifcfg_tap() {
 	EOS
 
   render_ifcfg_network_configuration "${@}"
-
-  beautify_config_body <<-EOS
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
-	EOS
 }
 
 ### 2:
