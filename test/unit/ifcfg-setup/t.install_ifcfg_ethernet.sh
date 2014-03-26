@@ -23,13 +23,13 @@ function tearDown() {
   :
 }
 
-function test_install_ifcfg_eth_no_opts() {
-  install_ifcfg_eth
+function test_install_ifcfg_ethernet_no_opts() {
+  install_ifcfg_ethernet
   assertEquals 0 ${?}
 }
 
-function test_install_ifcfg_eth_opts() {
-  install_ifcfg_eth ${ifname}
+function test_install_ifcfg_ethernet_opts() {
+  install_ifcfg_ethernet ${ifname}
   assertEquals 0 ${?}
 }
 

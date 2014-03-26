@@ -41,6 +41,35 @@ function config_line_in_file() {
   }
 }
 
+function render_ifcfg_network_configuration() {
+  unset onboot ip mask net bcast gw
+  # don't use "shift" here
+  [[ ${#} == 0 ]] || eval local "${@}"
+
+  local bootproto=none
+
+  if [[ -n "${ip}" ]]; then
+    bootproto=static
+  fi
+
+  beautify_config_body <<-EOS
+	BOOTPROTO=${bootproto}
+	ONBOOT=${onboot:-yes}
+	EOS
+
+  case ${bootproto} in
+    static)
+      beautify_config_body <<-EOS
+	IPADDR=${ip}
+	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
+	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
+	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
+	$([[ -z "${gw}"    ]] || echo "GATEWAY=${gw}")
+	EOS
+      ;;
+  esac
+}
+
 # 0:       configure_${type}_conf optional
 # 1:    render_ifcfg_${type}      required
 # 2:   install_ifcfg_${type}      required
@@ -50,29 +79,27 @@ function config_line_in_file() {
 
 ### 1:
 
-function render_ifcfg_eth() {
+function render_ifcfg_ethernet() {
   local ifname=${1:-eth0}
+  unset ip mask net bcast gw onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Ethernet
-	BOOTPROTO=none
-	$([[ -z "${ip}"    ]] || echo "IPADDR=${ip}")
-	$([[ -z "${mask}"  ]] || echo "NETMASK=${mask}")
-	$([[ -z "${net}"   ]] || echo "NETWORK=${net}")
-	$([[ -z "${bcast}" ]] || echo "BROADCAST=${bcast}")
-	ONBOOT=yes
 	EOS
+
+  render_ifcfg_network_configuration "${@}"
 }
 
 ### 2:
 
-function install_ifcfg_eth() {
+function install_ifcfg_ethernet() {
   local ifname=${1:-eth0}
+  unset ip mask net bcast gw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_eth ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} | install_ifcfg_file ${ifname}
+  render_ifcfg_ethernet ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} | install_ifcfg_file ${ifname}
 }
 
 ## driver/bonding
@@ -92,6 +119,7 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bond_master() {
   local ifname=${1:-bond0}
+  unset mode onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
@@ -122,9 +150,12 @@ function render_ifcfg_bond_master() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	BONDING_OPTS="${bond_opts}"
-	ONBOOT=yes
 	EOS
 }
 
@@ -132,6 +163,7 @@ function render_ifcfg_bond_master() {
 
 function install_ifcfg_bond_master() {
   local ifname=${1:-bond0}
+  unset mode
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_master ${ifname} mode=${mode} | install_ifcfg_file ${ifname}
@@ -141,14 +173,18 @@ function install_ifcfg_bond_master() {
 
 function render_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
+  unset master onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	MASTER=${master}
 	SLAVE=yes
-	ONBOOT=yes
 	EOS
 }
 
@@ -156,6 +192,7 @@ function render_ifcfg_bond_slave() {
 
 function install_ifcfg_bond_slave() {
   local ifname=${1:-eth0}
+  unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_slave ${ifname} master=${master} | install_ifcfg_file ${ifname}
@@ -165,6 +202,7 @@ function install_ifcfg_bond_slave() {
 
 function configure_ifcfg_bond_map() {
   local ifname=${1:-bond0}
+  unset mode master slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${ifname}
@@ -178,14 +216,18 @@ function configure_ifcfg_bond_map() {
 
 function render_ifcfg_bridge() {
   local ifname=${1:-br0}
+  unset address onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Bridge
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
-	ONBOOT=yes
 	EOS
 }
 
@@ -193,6 +235,7 @@ function render_ifcfg_bridge() {
 
 function install_ifcfg_bridge() {
   local ifname=${1:-br0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bridge ${ifname} address=${address} | install_ifcfg_file ${ifname}
@@ -202,6 +245,7 @@ function install_ifcfg_bridge() {
 
 function configure_ifcfg_bridge_map() {
   local ifname=${1:-br0}
+  local slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${ifname} "${@}"
@@ -236,13 +280,14 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local ifname=${1:-vlan1000}
+  unset onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	BOOTPROTO=none
-	ONBOOT=yes
 	EOS
+
+  render_ifcfg_network_configuration "${@}"
 }
 
 ### 2:
@@ -258,6 +303,7 @@ function install_ifcfg_vlan() {
 
 function configure_ifcfg_vlan_map() {
   local ifname=${1:-vlan1000}
+  local physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_vlan ${ifname}
@@ -274,14 +320,18 @@ function configure_ifcfg_vlan_map() {
 
 function render_ifcfg_tap() {
   local ifname=${1:-tap0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	TYPE=Tap
-	BOOTPROTO=none
+	EOS
+
+  render_ifcfg_network_configuration "${@}"
+
+  beautify_config_body <<-EOS
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
-	ONBOOT=yes
 	EOS
 }
 
@@ -289,6 +339,7 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local ifname=${1:-tap0}
+  unset address
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${ifname} address=${address} | install_ifcfg_file ${ifname}
