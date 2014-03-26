@@ -157,6 +157,9 @@ function render_ifcfg_bond_master() {
 	DEVICE=${ifname}
 	BOOTPROTO=none
 	BONDING_OPTS="${bond_opts}"
+	EOS
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
@@ -183,6 +186,9 @@ function render_ifcfg_bond_slave() {
 	BOOTPROTO=none
 	MASTER=${master}
 	SLAVE=yes
+	EOS
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
@@ -223,6 +229,9 @@ function render_ifcfg_bridge() {
 	TYPE=Bridge
 	BOOTPROTO=none
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	EOS
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
@@ -281,6 +290,9 @@ function render_ifcfg_vlan() {
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
 	BOOTPROTO=none
+	EOS
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
@@ -323,6 +335,9 @@ function render_ifcfg_tap() {
 	TYPE=Tap
 	BOOTPROTO=none
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	EOS
+
+  beautify_config_body <<-EOS
 	ONBOOT=yes
 	EOS
 }
