@@ -42,7 +42,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot ip mask net bcast gw mac
+  unset device type onboot ip mask net bcast gw mac
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
