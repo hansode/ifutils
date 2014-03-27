@@ -53,6 +53,7 @@ function render_ifcfg_network_configuration() {
   fi
 
   beautify_config_body <<-EOS
+	$([[ -z "${type}"  ]] || echo "TYPE=${type}")
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
@@ -87,10 +88,9 @@ function render_ifcfg_ethernet() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	TYPE=Ethernet
 	EOS
 
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" type=Ethernet
 }
 
 ### 2:
@@ -221,10 +221,9 @@ function render_ifcfg_bridge() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	TYPE=Bridge
 	EOS
 
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" type=Bridge
 }
 
 ### 2:
@@ -320,10 +319,9 @@ function render_ifcfg_tap() {
 
   beautify_config_body <<-EOS
 	DEVICE=${ifname}
-	TYPE=Tap
 	EOS
 
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" type=Tap
 }
 
 ### 2:
