@@ -76,7 +76,7 @@ function render_ifcfg_network_configuration() {
 # 0:       configure_${type}_conf optional
 # 1:    render_ifcfg_${type}      required
 # 2:   install_ifcfg_${type}      required
-# 3: configure_ifcfg_${type}_map  optional
+# 3:       map_ifcfg_${type}      optional
 
 ## net/ethernet
 
@@ -190,7 +190,7 @@ function install_ifcfg_bond_slave() {
 
 ### 3:
 
-function configure_ifcfg_bond_map() {
+function map_ifcfg_bond() {
   local device=${1:-bond0}
   unset mode master slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
@@ -223,7 +223,7 @@ function install_ifcfg_bridge() {
 
 ### 3:
 
-function configure_ifcfg_bridge_map() {
+function map_ifcfg_bridge() {
   local device=${1:-br0}
   local slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
@@ -277,7 +277,7 @@ function install_ifcfg_vlan() {
 
 ### 3:
 
-function configure_ifcfg_vlan_map() {
+function map_ifcfg_vlan() {
   local device=${1:-vlan1000}
   local physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"

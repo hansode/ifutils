@@ -44,7 +44,7 @@ function test_tap_macaddress() {
   install_ifcfg_bridge       ${brname}  mac=
   assertEquals 0 ${?}
 
-  configure_ifcfg_bridge_map ${brname} slave=${ethname}
+  map_ifcfg_bridge ${brname} slave=${ethname}
   assertEquals 0 ${?}
 }
 
