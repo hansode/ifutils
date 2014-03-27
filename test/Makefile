@@ -1,5 +1,4 @@
-#TARGETS=unit component
-TARGETS=unit
+TARGETS=unit component
 
 all: $(TARGETS)
 
