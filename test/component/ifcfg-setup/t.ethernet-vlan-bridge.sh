@@ -34,7 +34,7 @@ function tearDown() {
   rm -r ${TMPDIR}
 }
 
-function test_beautify_config_body_redirect() {
+function test_ethernet_vlan_bridge() {
   bonding_mode=1
 
   function gen_priimary() {
