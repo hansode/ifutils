@@ -53,7 +53,8 @@ function render_ifcfg_network_configuration() {
   fi
 
   beautify_config_body <<-EOS
-	$([[ -z "${type}"  ]] || echo "TYPE=${type}")
+	$([[ -z "${device}"  ]] || echo "DEVICE=${device}")
+	$([[ -z "${type}"    ]] || echo "TYPE=${type}")
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
 	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
@@ -86,11 +87,7 @@ function render_ifcfg_ethernet() {
   unset ip mask net bcast gw onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}" type=Ethernet
+  render_ifcfg_network_configuration "${@}" device=${ifname} type=Ethernet
 }
 
 ### 2:
@@ -149,11 +146,7 @@ function render_ifcfg_bond_master() {
     "
   done
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${ifname}
 
   beautify_config_body <<-EOS
 	BONDING_OPTS="${bond_opts}"
@@ -177,11 +170,7 @@ function render_ifcfg_bond_slave() {
   unset master onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${ifname}
 
   beautify_config_body <<-EOS
 	MASTER=${master}
@@ -219,11 +208,7 @@ function render_ifcfg_bridge() {
   local ifname=${1:-br0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}" type=Bridge
+  render_ifcfg_network_configuration "${@}" device=${ifname} type=Bridge
 }
 
 ### 2:
@@ -278,11 +263,7 @@ function render_ifcfg_vlan() {
   unset onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${ifname}
 }
 
 ### 2:
@@ -317,11 +298,7 @@ function render_ifcfg_tap() {
   local ifname=${1:-tap0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}" type=Tap
+  render_ifcfg_network_configuration "${@}" device=${ifname} type=Tap
 }
 
 ### 2:
