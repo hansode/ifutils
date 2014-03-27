@@ -97,7 +97,8 @@ function install_ifcfg_ethernet() {
   unset ip mask net bcast gw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_ethernet ${device} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} | install_ifcfg_file ${device}
+  render_ifcfg_ethernet ${device} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} \
+   | install_ifcfg_file ${device}
 }
 
 ## driver/bonding
@@ -166,7 +167,8 @@ function install_ifcfg_bond_master() {
   unset mode
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_master ${device} mode=${mode} | install_ifcfg_file ${device}
+  render_ifcfg_bond_master ${device} mode=${mode} \
+   | install_ifcfg_file ${device}
 }
 
 ### 1:slave
@@ -191,7 +193,8 @@ function install_ifcfg_bond_slave() {
   unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_slave ${device} master=${master} | install_ifcfg_file ${device}
+  render_ifcfg_bond_slave ${device} master=${master} \
+   | install_ifcfg_file ${device}
 }
 
 ### 3:
@@ -224,7 +227,8 @@ function install_ifcfg_bridge() {
   unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bridge ${device} mac=${mac} | install_ifcfg_file ${device}
+  render_ifcfg_bridge ${device} mac=${mac} \
+   | install_ifcfg_file ${device}
 }
 
 ### 3:
@@ -276,7 +280,8 @@ function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_vlan ${device} | install_ifcfg_file ${device}
+  render_ifcfg_vlan ${device} \
+   | install_ifcfg_file ${device}
 }
 
 ### 3:
@@ -312,7 +317,8 @@ function install_ifcfg_tap() {
   unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_tap ${device} mac=${mac} | install_ifcfg_file ${device}
+  render_ifcfg_tap ${device} mac=${mac} \
+   | install_ifcfg_file ${device}
 }
 
 ## CLI
