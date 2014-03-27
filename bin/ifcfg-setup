@@ -118,6 +118,12 @@ function configure_bonding_conf() {
 function render_ifcfg_bond_master() {
   local device=${1:-bond0}
   unset mode onboot
+  unset max_bonds num_grat_arp num_unsol_na \
+        miimon updelay downdelay \
+        use_carrier primary lacp_rate \
+        ad_select xmit_hash_policy \
+        arp_interval arp_ip_target arp_validate \
+        fail_over_mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
