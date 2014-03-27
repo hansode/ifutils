@@ -34,6 +34,22 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname})"
 }
 
+function test_render_ifcfg_network_configuration_opts_device() {
+  local device=eth0
+  local body="DEVICE=${device}
+BOOTPROTO=none
+ONBOOT=yes"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} device=${device})"
+}
+
+function test_render_ifcfg_network_configuration_opts_type() {
+  local type=Ethernet
+  local body="TYPE=${type}
+BOOTPROTO=none
+ONBOOT=yes"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} type=${type})"
+}
+
 function test_render_ifcfg_network_configuration_opts_mac() {
   local mac=fe:ff:ff:ff:ff:ff
   local body="BOOTPROTO=none
