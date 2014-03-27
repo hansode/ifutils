@@ -41,6 +41,31 @@ BROADCAST=192.168.1.255
 GATEWAY=192.168.1.1
 ```
 
+Commands
+--------
+
++ render
++ install
++ map
+
+Device Types
+------------
+
++ ethernet
++ bridge
++ vlan
++ tap
+
+Options
+-------
+
++ ip
++ mac
++ mask
++ net
++ bcast
++ gw
+
 License
 -------
 
