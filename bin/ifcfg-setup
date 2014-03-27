@@ -235,7 +235,7 @@ function install_ifcfg_bridge() {
 
 function map_ifcfg_bridge() {
   local device=${1:-br0}
-  local slave
+  unset slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${device} "${@}"
@@ -288,7 +288,7 @@ function install_ifcfg_vlan() {
 
 function map_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  local physdev
+  unset physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_vlan ${device}
