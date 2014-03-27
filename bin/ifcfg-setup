@@ -42,7 +42,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot ip mask net bcast gw address
+  unset onboot ip mask net bcast gw mac
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -57,7 +57,7 @@ function render_ifcfg_network_configuration() {
 	$([[ -z "${type}"    ]] || echo "TYPE=${type}")
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	$([[ -z "${mac}" ]] || echo "MACADDR=${mac}")
 	EOS
 
   case ${bootproto} in
@@ -215,10 +215,10 @@ function render_ifcfg_bridge() {
 
 function install_ifcfg_bridge() {
   local ifname=${1:-br0}
-  unset address
+  unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bridge ${ifname} address=${address} | install_ifcfg_file ${ifname}
+  render_ifcfg_bridge ${ifname} mac=${mac} | install_ifcfg_file ${ifname}
 }
 
 ### 3:
@@ -305,8 +305,8 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local ifname=${1:-tap0}
-  unset address
+  unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_tap ${ifname} address=${address} | install_ifcfg_file ${ifname}
+  render_ifcfg_tap ${ifname} mac=${mac} | install_ifcfg_file ${ifname}
 }
