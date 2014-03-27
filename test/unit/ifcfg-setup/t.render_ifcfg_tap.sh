@@ -38,12 +38,12 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_tap ${ifname})"
 }
 
-function test_render_ifcfg_tap_opts_address() {
+function test_render_ifcfg_tap_opts_mac() {
   local body="DEVICE=${ifname}
 TYPE=Tap
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_tap ${ifname} address=${address})"
+  assertEquals "${body}" "$(render_ifcfg_tap ${ifname} mac=${mac})"
 }
 
 ## shunit2

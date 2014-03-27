@@ -14,16 +14,16 @@ IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
 IFCFG_VLAN_CONF_PATH=${IFCFG_VLAN_CONF_PATH:-/etc/sysconfig/network}
 
 function gen_ifcfg_path() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
   local ifcfg_path=${IFCFG_PATH_PREFIX}
 
-  echo ${ifcfg_path}-${ifname}
+  echo ${ifcfg_path}-${device}
 }
 
 function install_ifcfg_file() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
 
-  tee $(gen_ifcfg_path ${ifname}) </dev/stdin
+  tee $(gen_ifcfg_path ${device}) </dev/stdin
 }
 
 function beautify_config_body() {
@@ -42,7 +42,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot ip mask net bcast gw address
+  unset device type onboot ip mask net bcast gw mac
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -53,9 +53,11 @@ function render_ifcfg_network_configuration() {
   fi
 
   beautify_config_body <<-EOS
+	$([[ -z "${device}"  ]] || echo "DEVICE=${device}")
+	$([[ -z "${type}"    ]] || echo "TYPE=${type}")
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
-	$([[ -z "${address}" ]] || echo "MACADDR=${address}")
+	$([[ -z "${mac}" ]] || echo "MACADDR=${mac}")
 	EOS
 
   case ${bootproto} in
@@ -81,26 +83,21 @@ function render_ifcfg_network_configuration() {
 ### 1:
 
 function render_ifcfg_ethernet() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
   unset ip mask net bcast gw onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	TYPE=Ethernet
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device} type=Ethernet
 }
 
 ### 2:
 
 function install_ifcfg_ethernet() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
   unset ip mask net bcast gw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_ethernet ${ifname} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} | install_ifcfg_file ${ifname}
+  render_ifcfg_ethernet ${device} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} | install_ifcfg_file ${device}
 }
 
 ## driver/bonding
@@ -108,10 +105,10 @@ function install_ifcfg_ethernet() {
 ### 0:
 
 function configure_bonding_conf() {
-  local ifname=${1:-bond0}
+  local device=${1:-bond0}
 
   local config_path=${IFCFG_BONDING_CONF_PATH}
-  local entry="alias ${ifname} bonding"
+  local entry="alias ${device} bonding"
 
   config_line_in_file ${config_path} "${entry}"
 }
@@ -119,7 +116,7 @@ function configure_bonding_conf() {
 ### 1:master
 
 function render_ifcfg_bond_master() {
-  local ifname=${1:-bond0}
+  local device=${1:-bond0}
   unset mode onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -149,11 +146,7 @@ function render_ifcfg_bond_master() {
     "
   done
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device}
 
   beautify_config_body <<-EOS
 	BONDING_OPTS="${bond_opts}"
@@ -163,25 +156,21 @@ function render_ifcfg_bond_master() {
 ### 2:master
 
 function install_ifcfg_bond_master() {
-  local ifname=${1:-bond0}
+  local device=${1:-bond0}
   unset mode
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_master ${ifname} mode=${mode} | install_ifcfg_file ${ifname}
+  render_ifcfg_bond_master ${device} mode=${mode} | install_ifcfg_file ${device}
 }
 
 ### 1:slave
 
 function render_ifcfg_bond_slave() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
   unset master onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device}
 
   beautify_config_body <<-EOS
 	MASTER=${master}
@@ -192,23 +181,23 @@ function render_ifcfg_bond_slave() {
 ### 2:slave
 
 function install_ifcfg_bond_slave() {
-  local ifname=${1:-eth0}
+  local device=${1:-eth0}
   unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_slave ${ifname} master=${master} | install_ifcfg_file ${ifname}
+  render_ifcfg_bond_slave ${device} master=${master} | install_ifcfg_file ${device}
 }
 
 ### 3:
 
 function configure_ifcfg_bond_map() {
-  local ifname=${1:-bond0}
+  local device=${1:-bond0}
   unset mode master slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  configure_bonding_conf    ${ifname}
-  install_ifcfg_bond_master ${ifname} mode=${mode}
-  install_ifcfg_bond_slave  ${slave}  master=${ifname}
+  configure_bonding_conf    ${device}
+  install_ifcfg_bond_master ${device} mode=${mode}
+  install_ifcfg_bond_slave  ${slave}  master=${device}
 }
 
 ## net/bridge
@@ -216,38 +205,33 @@ function configure_ifcfg_bond_map() {
 ### 1:
 
 function render_ifcfg_bridge() {
-  local ifname=${1:-br0}
+  local device=${1:-br0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	TYPE=Bridge
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device} type=Bridge
 }
 
 ### 2:
 
 function install_ifcfg_bridge() {
-  local ifname=${1:-br0}
-  unset address
+  local device=${1:-br0}
+  unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bridge ${ifname} address=${address} | install_ifcfg_file ${ifname}
+  render_ifcfg_bridge ${device} mac=${mac} | install_ifcfg_file ${device}
 }
 
 ### 3:
 
 function configure_ifcfg_bridge_map() {
-  local ifname=${1:-br0}
+  local device=${1:-br0}
   local slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  install_ifcfg_bridge ${ifname} "${@}"
+  install_ifcfg_bridge ${device} "${@}"
 
   local config_path=$(gen_ifcfg_path ${slave})
-  local entry="BRIDGE=${ifname}"
+  local entry="BRIDGE=${device}"
 
   config_line_in_file ${config_path} "${entry}"
 }
@@ -275,36 +259,32 @@ function configure_vlan_conf() {
 ### 1:
 
 function render_ifcfg_vlan() {
-  local ifname=${1:-vlan1000}
+  local device=${1:-vlan1000}
   unset onboot
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device}
 }
 
 ### 2:
 
 function install_ifcfg_vlan() {
-  local ifname=${1:-vlan1000}
+  local device=${1:-vlan1000}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_vlan ${ifname} | install_ifcfg_file ${ifname}
+  render_ifcfg_vlan ${device} | install_ifcfg_file ${device}
 }
 
 ### 3:
 
 function configure_ifcfg_vlan_map() {
-  local ifname=${1:-vlan1000}
+  local device=${1:-vlan1000}
   local physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  install_ifcfg_vlan ${ifname}
+  install_ifcfg_vlan ${device}
 
-  local config_path=$(gen_ifcfg_path ${ifname})
+  local config_path=$(gen_ifcfg_path ${device})
   local entry="PHYSDEV=${physdev}"
 
   config_line_in_file ${config_path} "${entry}"
@@ -315,23 +295,18 @@ function configure_ifcfg_vlan_map() {
 ### 1:
 
 function render_ifcfg_tap() {
-  local ifname=${1:-tap0}
+  local device=${1:-tap0}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  beautify_config_body <<-EOS
-	DEVICE=${ifname}
-	TYPE=Tap
-	EOS
-
-  render_ifcfg_network_configuration "${@}"
+  render_ifcfg_network_configuration "${@}" device=${device} type=Tap
 }
 
 ### 2:
 
 function install_ifcfg_tap() {
-  local ifname=${1:-tap0}
-  unset address
+  local device=${1:-tap0}
+  unset mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_tap ${ifname} address=${address} | install_ifcfg_file ${ifname}
+  render_ifcfg_tap ${device} mac=${mac} | install_ifcfg_file ${device}
 }

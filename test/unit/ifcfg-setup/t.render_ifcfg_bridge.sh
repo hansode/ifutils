@@ -38,12 +38,12 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"
 }
 
-function test_render_ifcfg_bridge_opts_address() {
+function test_render_ifcfg_bridge_opts_mac() {
   local body="DEVICE=${ifname}
 TYPE=Bridge
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname} address=${address})"
+  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname} mac=${mac})"
 }
 
 ## shunit2
