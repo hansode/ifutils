@@ -20,13 +20,13 @@ function tearDown() {
   :
 }
 
-function test_map_ifcfg_bond_no_opts() {
-  map_ifcfg_bond
+function test_map_ifcfg_bridge_no_opts() {
+  map_ifcfg_bridge
   assertEquals 0 ${?}
 }
 
-function test_map_ifcfg_bond_opts() {
-  map_ifcfg_bond
+function test_map_ifcfg_bridge_opts() {
+  map_ifcfg_bridge
   assertEquals 0 ${?}
 }
 
