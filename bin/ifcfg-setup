@@ -310,3 +310,15 @@ function install_ifcfg_tap() {
 
   render_ifcfg_tap ${device} mac=${mac} | install_ifcfg_file ${device}
 }
+
+## CLI
+
+function ifcfg_cli() {
+  local cmd=${1} type=${2}; shift 2
+
+  eval ${cmd}_ifcfg_${type} ${@}
+}
+
+if [[ "${BASH_SOURCE[0]##*/}" == "ifcfg-setup" ]]; then
+  ifcfg_cli "${@}"
+fi
