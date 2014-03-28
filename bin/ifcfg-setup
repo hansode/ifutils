@@ -60,9 +60,9 @@ function config_line_in_file() {
   if [[ ! -f "${config_path}" ]]; then
     : > ${config_path}
   fi
-  egrep -q -w "^${entry}" ${config_path} || {
+  if ! egrep -q -w "^${entry}" ${config_path}; then
     echo ${entry} >> ${config_path}
-  }
+  fi
 }
 
 function render_ifcfg_network_configuration() {
