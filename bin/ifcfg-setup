@@ -110,7 +110,7 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ip mask net bcast gw onboot hw dns1 dns2
+  unset onboot ip mask net bcast gw hw dns1 dns2
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -125,7 +125,7 @@ function render_ifcfg_ethernet() {
 
 function install_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ip mask net bcast gw onboot hw dns1 dns2
+  unset onboot ip mask net bcast gw hw dns1 dns2
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_ethernet ${device} \
@@ -151,8 +151,7 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bond_master() {
   local device=${1:-bond0}
-  unset mode onboot
-  unset ${IFCFG_BOND_PARAMS}
+  unset onboot mode ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
@@ -177,8 +176,7 @@ function render_ifcfg_bond_master() {
 
 function install_ifcfg_bond_master() {
   local device=${1:-bond0}
-  unset mode
-  unset ${IFCFG_BOND_PARAMS}
+  unset onboot mode ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_master ${device} \
@@ -190,7 +188,7 @@ function install_ifcfg_bond_master() {
 
 function render_ifcfg_bond_slave() {
   local device=${1:-eth0}
-  unset master onboot
+  unset onboot master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -206,7 +204,7 @@ function render_ifcfg_bond_slave() {
 
 function install_ifcfg_bond_slave() {
   local device=${1:-eth0}
-  unset master onboot
+  unset onboot master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_slave ${device} \
@@ -218,8 +216,7 @@ function install_ifcfg_bond_slave() {
 
 function map_ifcfg_bond() {
   local device=${1:-bond0}
-  unset mode master slave
-  unset ${IFCFG_BOND_PARAMS}
+  unset onboot mode master slave ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
