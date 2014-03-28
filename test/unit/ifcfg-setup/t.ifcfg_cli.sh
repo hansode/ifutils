@@ -16,6 +16,9 @@ declare ifname=tap0
 
 function setUp() {
   function install_ifcfg_file() { echo ${@}; }
+  function configure_bonding_conf() { echo ${@}; }
+  function configure_vlan_conf() { echo ${@}; }
+  function gen_ifcfg_path() { echo /dev/null; }
 }
 
 function tearDown() {
@@ -55,7 +58,7 @@ function test_ifcfg_cli_install() {
 }
 
 function test_ifcfg_cli_map() {
-  local cmd=install
+  local cmd=map
 
   ifcfg_cli ${cmd} vlan vlan2000
   assertEquals 0 ${?}
