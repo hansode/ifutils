@@ -64,6 +64,14 @@ function test_ifcfg_cli_map() {
   assertEquals 0 ${?}
 }
 
+function test_ifcfg_cli_undefined() {
+  ifcfg_cli undefined ethernet eth0
+  assertNotEquals 0 ${?}
+
+  ifcfg_cli render unknown eth0
+  assertNotEquals 0 ${?}
+}
+
 ## shunit2
 
 . ${shunit2_file}
