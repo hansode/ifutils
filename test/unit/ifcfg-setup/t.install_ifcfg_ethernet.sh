@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=eth0
+declare device=eth0
 IFCFG_PATH_PREFIX=ifcfg-eth9
 
 ## functions
@@ -29,7 +29,7 @@ function test_install_ifcfg_ethernet_no_opts() {
 }
 
 function test_install_ifcfg_ethernet_opts() {
-  install_ifcfg_ethernet ${ifname}
+  install_ifcfg_ethernet ${device}
   assertEquals 0 ${?}
 }
 

@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=tap0
+declare device=tap0
 IFCFG_PATH_PREFIX=ifcfg-tap9
 
 ## functions
@@ -29,7 +29,7 @@ function test_install_ifcfg_tap_no_opts() {
 }
 
 function test_install_ifcfg_tap_opts() {
-  install_ifcfg_tap ${ifname}
+  install_ifcfg_tap ${device}
   assertEquals 0 ${?}
 }
 

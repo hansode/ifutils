@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=vlan2345
+declare device=vlan2345
 
 ## functions
 
@@ -30,10 +30,10 @@ ONBOOT=yes"
 }
 
 function test_render_ifcfg_vlan_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_vlan ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_vlan ${device})"
 }
 
 ## shunit2

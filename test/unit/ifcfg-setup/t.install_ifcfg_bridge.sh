@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=br0
+declare device=br0
 IFCFG_PATH_PREFIX=ifcfg-br9
 
 ## functions
@@ -29,7 +29,7 @@ function test_install_ifcfg_bridge_no_opts() {
 }
 
 function test_install_ifcfg_bridge_opts() {
-  install_ifcfg_bridge ${ifname}
+  install_ifcfg_bridge ${device}
   assertEquals 0 ${?}
 }
 

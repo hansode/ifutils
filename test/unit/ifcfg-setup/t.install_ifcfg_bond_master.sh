@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=bond0
+declare device=bond0
 IFCFG_PATH_PREFIX=ifcfg-bond9
 
 ## functions
@@ -29,7 +29,7 @@ function test_install_ifcfg_bond_master_no_opts() {
 }
 
 function test_install_ifcfg_bond_master_opts() {
-  install_ifcfg_bond_master ${ifname}
+  install_ifcfg_bond_master ${device}
   assertEquals 0 ${?}
 }
 

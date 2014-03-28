@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=tap0
+declare device=tap0
 
 ## functions
 
@@ -31,19 +31,19 @@ ONBOOT=yes"
 }
 
 function test_render_ifcfg_tap_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Tap
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_tap ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_tap ${device})"
 }
 
 function test_render_ifcfg_tap_opts_mac() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Tap
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_tap ${ifname} mac=${mac})"
+  assertEquals "${body}" "$(render_ifcfg_tap ${device} mac=${mac})"
 }
 
 ## shunit2

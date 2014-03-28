@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=eth0
+declare device=eth0
 
 ## functions
 
@@ -23,7 +23,7 @@ function tearDown() {
 }
 
 function test_render_ifcfg_bond_slave_no_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 MASTER=${master}
@@ -32,12 +32,12 @@ SLAVE=yes"
 }
 
 function test_render_ifcfg_bond_slave_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 MASTER=${master}
 SLAVE=yes"
-  assertEquals "${body}" "$(render_ifcfg_bond_slave ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_bond_slave ${device})"
 }
 
 ## shunit2

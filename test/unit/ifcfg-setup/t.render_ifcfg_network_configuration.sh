@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=eth0
+declare device=eth0
 
 ## functions
 
@@ -31,7 +31,7 @@ ONBOOT=yes"
 function test_render_ifcfg_network_configuration_opts() {
   local body="BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device})"
 }
 
 function test_render_ifcfg_network_configuration_opts_device() {
@@ -39,7 +39,7 @@ function test_render_ifcfg_network_configuration_opts_device() {
   local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} device=${device})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} device=${device})"
 }
 
 function test_render_ifcfg_network_configuration_opts_type() {
@@ -47,7 +47,7 @@ function test_render_ifcfg_network_configuration_opts_type() {
   local body="TYPE=${type}
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} type=${type})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} type=${type})"
 }
 
 function test_render_ifcfg_network_configuration_opts_mac() {
@@ -55,7 +55,7 @@ function test_render_ifcfg_network_configuration_opts_mac() {
   local body="BOOTPROTO=none
 ONBOOT=yes
 MACADDR=${mac}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} mac=${mac})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} mac=${mac})"
 }
 
 function test_render_ifcfg_network_configuration_opts_ip() {
@@ -63,7 +63,7 @@ function test_render_ifcfg_network_configuration_opts_ip() {
   local body="BOOTPROTO=static
 ONBOOT=yes
 IPADDR=${ip}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} ip=${ip})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} ip=${ip})"
 }
 
 function test_render_ifcfg_network_configuration_opts_mask() {
@@ -73,7 +73,7 @@ function test_render_ifcfg_network_configuration_opts_mask() {
 ONBOOT=yes
 IPADDR=${ip}
 NETMASK=${mask}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} ip=${ip} mask=${mask})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} ip=${ip} mask=${mask})"
 }
 
 function test_render_ifcfg_network_configuration_opts_net() {
@@ -83,7 +83,7 @@ function test_render_ifcfg_network_configuration_opts_net() {
 ONBOOT=yes
 IPADDR=${ip}
 NETWORK=${net}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} ip=${ip} net=${net})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} ip=${ip} net=${net})"
 }
 
 function test_render_ifcfg_network_configuration_opts_bcast() {
@@ -93,7 +93,7 @@ function test_render_ifcfg_network_configuration_opts_bcast() {
 ONBOOT=yes
 IPADDR=${ip}
 BROADCAST=${bcast}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} ip=${ip} bcast=${bcast})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} ip=${ip} bcast=${bcast})"
 }
 
 function test_render_ifcfg_network_configuration_opts_gw() {
@@ -103,7 +103,7 @@ function test_render_ifcfg_network_configuration_opts_gw() {
 ONBOOT=yes
 IPADDR=${ip}
 GATEWAY=${gw}"
-  assertEquals "${body}" "$(render_ifcfg_network_configuration ${ifname} ip=${ip} gw=${gw})"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} ip=${ip} gw=${gw})"
 }
 
 ## shunit2
