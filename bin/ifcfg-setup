@@ -181,10 +181,16 @@ function render_ifcfg_bond_master() {
 function install_ifcfg_bond_master() {
   local device=${1:-bond0}
   unset mode
+  unset max_bonds num_grat_arp num_unsol_na \
+        miimon updelay downdelay \
+        use_carrier primary lacp_rate \
+        ad_select xmit_hash_policy \
+        arp_interval arp_ip_target arp_validate \
+        fail_over_mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_master ${device} \
-   mode=${mode} \
+   mode=${mode} "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -221,10 +227,16 @@ function install_ifcfg_bond_slave() {
 function map_ifcfg_bond() {
   local device=${1:-bond0}
   unset mode master slave
+  unset max_bonds num_grat_arp num_unsol_na \
+        miimon updelay downdelay \
+        use_carrier primary lacp_rate \
+        ad_select xmit_hash_policy \
+        arp_interval arp_ip_target arp_validate \
+        fail_over_mac
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
-  install_ifcfg_bond_master ${device} mode=${mode}
+  install_ifcfg_bond_master ${device} mode=${mode} "${@}"
   install_ifcfg_bond_slave  ${slave}  master=${device}
 }
 
