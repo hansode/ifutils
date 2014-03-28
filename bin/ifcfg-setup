@@ -297,7 +297,7 @@ function render_ifcfg_vlan() {
 
 function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  local onboot dns1 dns2
+  unset onboot dns1 dns2
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_vlan ${device} \
@@ -328,7 +328,7 @@ function map_ifcfg_vlan() {
 
 function render_ifcfg_tap() {
   local device=${1:-tap0}
-  local onboot dns1 dns2
+  unset onboot dns1 dns2
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -339,7 +339,7 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local device=${1:-tap0}
-  local onboot mac dns1 dns2
+  unset onboot mac dns1 dns2
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${device} \
