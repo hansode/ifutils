@@ -61,6 +61,7 @@ Options
 
 + ip
 + mac
++ hw
 + mask
 + net
 + bcast
