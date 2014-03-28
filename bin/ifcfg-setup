@@ -28,6 +28,12 @@ function install_ifcfg_file() {
 
 function beautify_config_body() {
   cat | egrep -v '^#|^$'
+
+  # ignore exit-code 1 of egrep
+  # > $ echo | egrep -v '^#|^$'; echo $?
+  # > 1
+
+  ! [[ ${?} == 2 ]]
 }
 
 function config_line_in_file() {
