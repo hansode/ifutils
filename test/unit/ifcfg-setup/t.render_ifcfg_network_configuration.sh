@@ -74,6 +74,14 @@ DNS2=${dns2}"
   assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} dns2=${dns2})"
 }
 
+function test_render_ifcfg_network_configuration_opts_bridge() {
+  local bridge=br0
+  local body="BOOTPROTO=none
+ONBOOT=yes
+BRIDGE=${bridge}"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} bridge=${bridge})"
+}
+
 function test_render_ifcfg_network_configuration_opts_ip() {
   local ip=192.0.2.10
   local body="BOOTPROTO=static
