@@ -38,6 +38,16 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
 }
 
+function test_render_ifcfg_ethernet_opts_hw() {
+  local hw=fe:ff:ff:ff:ff:ff
+  local body="DEVICE=${ifname}
+TYPE=Ethernet
+BOOTPROTO=none
+ONBOOT=yes
+HWADDR=${hw}"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} hw=${hw})"
+}
+
 ## shunit2
 
 . ${shunit2_file}

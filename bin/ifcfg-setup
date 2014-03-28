@@ -84,20 +84,24 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ip mask net bcast gw onboot
+  unset ip mask net bcast gw onboot hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" device=${device} type=Ethernet
+
+  beautify_config_body <<-EOS
+	$([[ -z "${hw}" ]] || echo "HWADDR=${hw}")
+	EOS
 }
 
 ### 2:
 
 function install_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ip mask net bcast gw
+  unset ip mask net bcast gw onboot hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_ethernet ${device} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} \
+  render_ifcfg_ethernet ${device} ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} hw=${hw} \
    | install_ifcfg_file ${device}
 }
 
