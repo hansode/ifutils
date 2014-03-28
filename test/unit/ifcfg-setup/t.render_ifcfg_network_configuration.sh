@@ -66,7 +66,7 @@ DNS1=${dns1}"
   assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} dns1=${dns1})"
 }
 
-function test_render_ifcfg_network_configuration_opts_dns1() {
+function test_render_ifcfg_network_configuration_opts_dns2() {
   local dns2=192.0.2.102
   local body="BOOTPROTO=none
 ONBOOT=yes
