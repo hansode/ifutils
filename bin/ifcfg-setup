@@ -1,10 +1,14 @@
 #!/bin/bash
 #
 # description:
+#  ifcfg-setup is a utility and framework for /etc/sysconfig/network-scripts/ifcfg-X file management
 #
 # requires:
 #  bash
 #  tee, egrep, cat
+#
+# url:
+#  https://github.com/hansode/ifcfg-setup
 #
 
 ## base
