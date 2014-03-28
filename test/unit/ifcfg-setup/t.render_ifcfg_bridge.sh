@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=br0
+declare device=br0
 
 ## functions
 
@@ -31,19 +31,19 @@ ONBOOT=yes"
 }
 
 function test_render_ifcfg_bridge_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Bridge
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_bridge ${device})"
 }
 
 function test_render_ifcfg_bridge_opts_mac() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Bridge
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_bridge ${ifname} mac=${mac})"
+  assertEquals "${body}" "$(render_ifcfg_bridge ${device} mac=${mac})"
 }
 
 ## shunit2

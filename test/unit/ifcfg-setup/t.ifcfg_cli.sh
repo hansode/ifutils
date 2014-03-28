@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=tap0
+declare device=tap0
 
 ## functions
 

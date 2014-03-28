@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=bond0
+declare device=bond0
 
 ## functions
 
@@ -31,20 +31,20 @@ BONDING_OPTS=\"mode=1\""
 }
 
 function test_render_ifcfg_bond_master_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 BONDING_OPTS=\"mode=1\""
-  assertEquals "${body}" "$(render_ifcfg_bond_master ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_bond_master ${device})"
 }
 
 function test_render_ifcfg_bond_master_opts_mode() {
   local mode=2
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 BONDING_OPTS=\"mode=${mode}\""
-  assertEquals "${body}" "$(render_ifcfg_bond_master ${ifname} mode=${mode})"
+  assertEquals "${body}" "$(render_ifcfg_bond_master ${device} mode=${mode})"
 }
 
 ## shunit2

@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=vlan2345
+declare device=vlan2345
 IFCFG_PATH_PREFIX=ifcfg-vlan9
 
 ## functions
@@ -29,7 +29,7 @@ function test_install_ifcfg_vlan_no_opts() {
 }
 
 function test_install_ifcfg_vlan_opts() {
-  install_ifcfg_vlan ${ifname}
+  install_ifcfg_vlan ${device}
   assertEquals 0 ${?}
 }
 

@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=eth0
+declare device=eth0
 
 ## functions
 
@@ -31,21 +31,21 @@ ONBOOT=yes"
 }
 
 function test_render_ifcfg_ethernet_opts() {
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Ethernet
 BOOTPROTO=none
 ONBOOT=yes"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${device})"
 }
 
 function test_render_ifcfg_ethernet_opts_hw() {
   local hw=fe:ff:ff:ff:ff:ff
-  local body="DEVICE=${ifname}
+  local body="DEVICE=${device}
 TYPE=Ethernet
 BOOTPROTO=none
 ONBOOT=yes
 HWADDR=${hw}"
-  assertEquals "${body}" "$(render_ifcfg_ethernet ${ifname} hw=${hw})"
+  assertEquals "${body}" "$(render_ifcfg_ethernet ${device} hw=${hw})"
 }
 
 ## shunit2

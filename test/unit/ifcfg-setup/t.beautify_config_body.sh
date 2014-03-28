@@ -10,7 +10,7 @@
 
 ## variables
 
-declare ifname=eth0
+declare device=eth0
 declare ifcfg_path_prefix=/etc/sysconfig/network-scripts/ifcfg
 
 ## functions
