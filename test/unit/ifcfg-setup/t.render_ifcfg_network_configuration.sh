@@ -58,6 +58,22 @@ MACADDR=${mac}"
   assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} mac=${mac})"
 }
 
+function test_render_ifcfg_network_configuration_opts_dns1() {
+  local dns1=192.0.2.101
+  local body="BOOTPROTO=none
+ONBOOT=yes
+DNS1=${dns1}"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} dns1=${dns1})"
+}
+
+function test_render_ifcfg_network_configuration_opts_dns1() {
+  local dns2=192.0.2.102
+  local body="BOOTPROTO=none
+ONBOOT=yes
+DNS2=${dns2}"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} dns2=${dns2})"
+}
+
 function test_render_ifcfg_network_configuration_opts_ip() {
   local ip=192.0.2.10
   local body="BOOTPROTO=static

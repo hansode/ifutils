@@ -66,6 +66,8 @@ Options
 + net
 + bcast
 + gw
++ dns1
++ dns2
 
 License
 -------
