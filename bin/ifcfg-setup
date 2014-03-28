@@ -59,13 +59,13 @@ function render_ifcfg_network_configuration() {
   fi
 
   beautify_config_body <<-EOS
-	$([[ -z "${device}"  ]] || echo "DEVICE=${device}")
-	$([[ -z "${type}"    ]] || echo "TYPE=${type}")
+	$([[ -z "${device}" ]] || echo "DEVICE=${device}")
+	$([[ -z "${type}"   ]] || echo "TYPE=${type}")
 	BOOTPROTO=${bootproto}
 	ONBOOT=${onboot:-yes}
-	$([[ -z "${mac}" ]] || echo "MACADDR=${mac}")
-	$([[ -z "${dns1}" ]] || echo "DNS1=${dns1}")
-	$([[ -z "${dns2}" ]] || echo "DNS2=${dns2}")
+	$([[ -z "${mac}"    ]] || echo "MACADDR=${mac}")
+	$([[ -z "${dns1}"   ]] || echo "DNS1=${dns1}")
+	$([[ -z "${dns2}"   ]] || echo "DNS2=${dns2}")
 	EOS
 
   case ${bootproto} in
