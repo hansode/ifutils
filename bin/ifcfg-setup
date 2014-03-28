@@ -325,10 +325,30 @@ function install_ifcfg_tap() {
 
 ## CLI
 
+function usage() {
+  cat <<-EOS
+	Usage: ifcfg-setup <command> <device-type> <device-name> [opts...]
+	
+	commands:
+	    render   <device-type> <device-name>  render ifcfg file for debug
+	    install  <device-type> <device-name>  install ifcfg file
+	    map      <device-type> <device-name>  TODO
+
+	device-type:
+	    ethernet
+	    bridge
+	    vlan
+	    tap
+	EOS
+}
+
 function ifcfg_cli() {
   local cmd=${1} type=${2}; shift 2
 
-  eval ${cmd}_ifcfg_${type} ${@}
+  local function=${cmd}_ifcfg_${type}
+
+  declare -f ${function} >/dev/null || { usage; return 1; }
+  eval ${function} ${@}
 }
 
 if [[ "${BASH_SOURCE[0]##*/}" == "ifcfg-setup" ]]; then
