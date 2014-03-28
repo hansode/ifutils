@@ -13,6 +13,24 @@ IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
 IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
 IFCFG_VLAN_CONF_PATH=${IFCFG_VLAN_CONF_PATH:-/etc/sysconfig/network}
 
+IFCFG_BOND_PARAMS="
+  max_bonds
+  num_grat_arp
+  num_unsol_na
+  miimon
+  updelay
+  downdelay
+  use_carrier
+  primary
+  lacp_rate
+  ad_select
+  xmit_hash_policy
+  arp_interval
+  arp_ip_target
+  arp_validate
+  fail_over_mac
+"
+
 function gen_ifcfg_path() {
   local device=${1:-eth0}
   local ifcfg_path=${IFCFG_PATH_PREFIX}
@@ -134,32 +152,11 @@ function configure_bonding_conf() {
 function render_ifcfg_bond_master() {
   local device=${1:-bond0}
   unset mode onboot
-  unset max_bonds num_grat_arp num_unsol_na \
-        miimon updelay downdelay \
-        use_carrier primary lacp_rate \
-        ad_select xmit_hash_policy \
-        arp_interval arp_ip_target arp_validate \
-        fail_over_mac
+  unset ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bond_opts="mode=${mode:-1}"
-  local bond_params="
-    max_bonds
-    num_grat_arp
-    num_unsol_na
-    miimon
-    updelay
-    downdelay
-    use_carrier
-    primary
-    lacp_rate
-    ad_select
-    xmit_hash_policy
-    arp_interval
-    arp_ip_target
-    arp_validate
-    fail_over_mac
-  "
+  local bond_params=${IFCFG_BOND_PARAMS}
 
   local __param
   for __param in ${bond_params}; do
@@ -181,12 +178,7 @@ function render_ifcfg_bond_master() {
 function install_ifcfg_bond_master() {
   local device=${1:-bond0}
   unset mode
-  unset max_bonds num_grat_arp num_unsol_na \
-        miimon updelay downdelay \
-        use_carrier primary lacp_rate \
-        ad_select xmit_hash_policy \
-        arp_interval arp_ip_target arp_validate \
-        fail_over_mac
+  unset ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bond_master ${device} \
@@ -227,12 +219,7 @@ function install_ifcfg_bond_slave() {
 function map_ifcfg_bond() {
   local device=${1:-bond0}
   unset mode master slave
-  unset max_bonds num_grat_arp num_unsol_na \
-        miimon updelay downdelay \
-        use_carrier primary lacp_rate \
-        ad_select xmit_hash_policy \
-        arp_interval arp_ip_target arp_validate \
-        fail_over_mac
+  unset ${IFCFG_BOND_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
