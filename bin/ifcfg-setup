@@ -66,7 +66,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset device type onboot ip mask net bcast gw mac dns1 dns2
+  unset onboot device type ip mask net bcast gw mac dns1 dns2
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -253,7 +253,7 @@ function install_ifcfg_bridge() {
 
 function map_ifcfg_bridge() {
   local device=${1:-br0}
-  unset slave
+  unset onboot slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${device} "${@}"
@@ -309,7 +309,7 @@ function install_ifcfg_vlan() {
 
 function map_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset physdev
+  unset onboot physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_vlan_conf
