@@ -333,7 +333,7 @@ function map_ifcfg_vlan() {
 
 function render_ifcfg_tap() {
   local device=${1:-tap0}
-  unset onboot dns1 dns2 bridge
+  unset onboot mac dns1 dns2 bridge
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
