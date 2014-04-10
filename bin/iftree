@@ -10,8 +10,6 @@
 # url:
 #  https://github.com/hansode/ifutils
 #
-set -e
-set -o pipefail
 
 function nic_type() {
   local nic=${1}
@@ -86,15 +84,26 @@ function shownic() {
   esac
 }
 
-if [[ ${#} != 0 ]]; then
-  while [[ "${1}" ]]; do
-    nic=${1}; shift
-    [[ -L "/sys/class/net/${nic}" ]] || continue
-    shownic ${nic}
-  done
-else
-  for nic in /sys/class/net/*; do
-    [[ -L "${nic}" ]] || continue
-    shownic $(basename ${nic})
-  done
+function iftree_cli() {
+  local nic
+
+  if [[ ${#} != 0 ]]; then
+    while [[ "${1}" ]]; do
+      nic=${1}; shift
+      [[ -L "/sys/class/net/${nic}" ]] || continue
+      shownic ${nic}
+    done
+  else
+    for nic in /sys/class/net/*; do
+      [[ -L "${nic}" ]] || continue
+      shownic $(basename ${nic})
+    done
+  fi
+}
+
+if [[ "${BASH_SOURCE[0]##*/}" == "iftree" ]]; then
+  set -e
+  set -o pipefail
+
+  iftree_cli "${@}"
 fi
