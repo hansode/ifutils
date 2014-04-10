@@ -27,11 +27,9 @@ function setUp() {
 
   device=br0
   mkdir ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bridge
-  mkdir ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif
 
   device=bond0
   mkdir ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding
-  touch ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves
 
   device=tap0
   touch ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/tun_flags
@@ -47,18 +45,47 @@ function tearDown() {
   rm -r ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}
 }
 
-function test_iftree_cli_no_opts() {
+function test_device_type_no_opts() {
   local device=
 
-  iftree_cli
-  assertEquals 0 ${?}
+  device_type ${device}
+  assertNotEquals 0 ${?}
 }
 
-function test_iftree_cli_opts() {
+function test_device_type_ethernet() {
   local device=eth0
 
-  iftree_cli "${device}"
-  assertEquals 0 ${?}
+  assertEquals ethernet "$(device_type ${device})"
+}
+
+function test_device_type_bridge() {
+  local device=br0
+
+  assertEquals bridge "$(device_type ${device})"
+}
+
+function test_device_type_bonding() {
+  local device=bond0
+
+  assertEquals bonding "$(device_type ${device})"
+}
+
+function test_device_type_tap() {
+  local device=tap0
+
+  assertEquals tap "$(device_type ${device})"
+}
+
+function test_device_type_vlan() {
+  local device=vlan0
+
+  assertEquals vlan "$(device_type ${device})"
+}
+
+function test_device_type_lo() {
+  local device=lo
+
+  assertEquals lo "$(device_type ${device})"
 }
 
 ## shunit2

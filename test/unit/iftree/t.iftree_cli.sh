@@ -15,7 +15,7 @@ IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=./sys.${$}
 ## functions
 
 function setUp() {
-  function shownic() { echo shownic "${@}"; }
+  function show_device() { echo show_device "${@}"; }
 }
 
 function tearDown() {
@@ -23,16 +23,16 @@ function tearDown() {
 }
 
 function test_iftree_cli_no_opts() {
-  local nic=
+  local device=
 
   iftree_cli
   assertEquals 0 ${?}
 }
 
 function test_iftree_cli_opts() {
-  local nic=eth0
+  local device=eth0
 
-  iftree_cli "${nic}"
+  iftree_cli "${device}"
   assertEquals 0 ${?}
 }
 

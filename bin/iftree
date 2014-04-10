@@ -13,20 +13,20 @@
 
 IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX:-/sys/class/net}
 
-function nic_type() {
-  local nic=${1}
-  [[ -n "${nic}" ]] || return 1
+function device_type() {
+  local device=${1}
+  [[ -n "${device}" ]] || return 1
   local type=ethernet
 
-  if   [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bridge ]]; then
+  if   [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bridge ]]; then
     type=bridge
-  elif [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bonding ]]; then
+  elif [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding ]]; then
     type=bonding
-  elif [[ -f ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/tun_flags ]]; then
+  elif [[ -f ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/tun_flags ]]; then
     type=tap
-  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/ifindex)" != "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/iflink)" ]]; then
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/ifindex)" != "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink)" ]]; then
     type=vlan
-  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/type)" == 772 ]]; then
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/type)" == 772 ]]; then
     type=lo
   fi
 
@@ -37,12 +37,12 @@ function indent() {
   sed "s,^,  ," < /dev/stdin
 }
 
-function shownic() {
-  local nic=${1}
-  [[ -n "${nic}" ]] || return 1
+function show_device() {
+  local device=${1}
+  [[ -n "${device}" ]] || return 1
 
-  echo -n "device=${nic} "
-  local type=$(nic_type ${nic})
+  echo -n "device=${device} "
+  local type=$(device_type ${device})
 
   echo -n "type=${type} "
   case "${type}" in
@@ -50,25 +50,25 @@ function shownic() {
       echo
       ;;
     bridge)
-      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/brif/)"
+      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/)"
       echo brif=\"${brif}\"
 
       local slave
       for slave in ${brif}; do
-        shownic ${slave} | indent
+        show_device ${slave} | indent
       done
       ;;
     bonding)
-      local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bonding/slaves)"
+      local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves)"
       echo slaves=\"${slaves}\"
 
       local slave
       for slave in ${slaves}; do
-        shownic ${slave} | indent
+        show_device ${slave} | indent
       done
       ;;
     vlan)
-      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/iflink) master i
+      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink) master i
 
       for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
         [[ "$(< ${i})" == "${iflink}" ]] || continue
@@ -77,7 +77,7 @@ function shownic() {
       echo master=${master}
 
       if [[ -n "${master}" ]]; then
-        shownic ${master} | indent
+        show_device ${master} | indent
       fi
       ;;
     *)
@@ -87,18 +87,18 @@ function shownic() {
 }
 
 function iftree_cli() {
-  local nic
+  local device
 
   if [[ ${#} != 0 ]]; then
     while [[ "${1}" ]]; do
-      nic=${1}; shift
-      [[ -f "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}" ]] && continue
-      shownic ${nic}
+      device=${1}; shift
+      [[ -f "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}" ]] && continue
+      show_device ${device}
     done
   else
-    for nic in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
-      [[ -L "${nic}" ]] || continue
-      shownic $(basename ${nic})
+    for device in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
+      [[ -L "${device}" ]] || continue
+      show_device $(basename ${device})
     done
   fi
 }

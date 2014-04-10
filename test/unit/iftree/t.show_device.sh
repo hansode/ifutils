@@ -47,17 +47,52 @@ function tearDown() {
   rm -r ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}
 }
 
-function test_iftree_cli_no_opts() {
+function test_show_device_no_opts() {
   local device=
 
-  iftree_cli
+  show_device ${device}
+  assertNotEquals 0 ${?}
+}
+
+function test_show_device_ethernet() {
+  local device=eth0
+
+  show_device ${device}
   assertEquals 0 ${?}
 }
 
-function test_iftree_cli_opts() {
-  local device=eth0
+function test_show_device_bridge() {
+  local device=br0
 
-  iftree_cli "${device}"
+  show_device ${device}
+  assertEquals 0 ${?}
+}
+
+function test_show_device_bonding() {
+  local device=bond0
+
+  show_device ${device}
+  assertEquals 0 ${?}
+}
+
+function test_show_device_tap() {
+  local device=tap0
+
+  show_device ${device}
+  assertEquals 0 ${?}
+}
+
+function test_show_device_vlan() {
+  local device=vlan0
+
+  show_device ${device}
+  assertEquals 0 ${?}
+}
+
+function test_show_device_lo() {
+  local device=lo
+
+  show_device ${device}
   assertEquals 0 ${?}
 }
 
