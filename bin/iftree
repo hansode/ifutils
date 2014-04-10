@@ -92,7 +92,7 @@ function iftree_cli() {
   if [[ ${#} != 0 ]]; then
     while [[ "${1}" ]]; do
       nic=${1}; shift
-      [[ -L "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}" ]] || continue
+      [[ -f "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}" ]] && continue
       shownic ${nic}
     done
   else
