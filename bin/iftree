@@ -11,20 +11,22 @@
 #  https://github.com/hansode/ifutils
 #
 
+IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX:-/sys/class/net}
+
 function nic_type() {
   local nic=${1}
   [[ -n "${nic}" ]] || return 1
   local type=ethernet
 
-  if   [[ -d /sys/class/net/${nic}/bridge ]]; then
+  if   [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bridge ]]; then
     type=bridge
-  elif [[ -d /sys/class/net/${nic}/bonding ]]; then
+  elif [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bonding ]]; then
     type=bonding
-  elif [[ -f /sys/class/net/${nic}/tun_flags ]]; then
+  elif [[ -f ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/tun_flags ]]; then
     type=tap
-  elif [[ "$(< /sys/class/net/${nic}/ifindex)" != "$(< /sys/class/net/${nic}/iflink)" ]]; then
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/ifindex)" != "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/iflink)" ]]; then
     type=vlan
-  elif [[ "$(< /sys/class/net/${nic}/type)" == 772 ]]; then
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/type)" == 772 ]]; then
     type=lo
   fi
 
@@ -48,7 +50,7 @@ function shownic() {
       echo
       ;;
     bridge)
-      local brif="$(ls /sys/class/net/${nic}/brif/)"
+      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/brif/)"
       echo brif=\"${brif}\"
 
       local slave
@@ -57,7 +59,7 @@ function shownic() {
       done
       ;;
     bonding)
-      local slaves="$(< /sys/class/net/${nic}/bonding/slaves)"
+      local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/bonding/slaves)"
       echo slaves=\"${slaves}\"
 
       local slave
@@ -66,9 +68,9 @@ function shownic() {
       done
       ;;
     vlan)
-      local iflink=$(< /sys/class/net/${nic}/iflink) master i
+      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}/iflink) master i
 
-      for i in /sys/class/net/*/ifindex; do
+      for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
         [[ "$(< ${i})" == "${iflink}" ]] || continue
         master=$(basename ${i%%/ifindex})
       done
@@ -90,11 +92,11 @@ function iftree_cli() {
   if [[ ${#} != 0 ]]; then
     while [[ "${1}" ]]; do
       nic=${1}; shift
-      [[ -L "/sys/class/net/${nic}" ]] || continue
+      [[ -L "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${nic}" ]] || continue
       shownic ${nic}
     done
   else
-    for nic in /sys/class/net/*; do
+    for nic in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
       [[ -L "${nic}" ]] || continue
       shownic $(basename ${nic})
     done
