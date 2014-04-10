@@ -97,7 +97,7 @@ function iftree_cli() {
     done
   else
     for device in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
-      [[ -L "${device}" ]] || continue
+      [[ -f "${device}" ]] && continue
       show_device $(basename ${device})
     done
   fi
