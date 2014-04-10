@@ -15,20 +15,20 @@
 function setUp() {
   function install_ifcfg_file() { echo ${@}; }
   function configure_bonding_conf() { :; }
-  function install_ifcfg_bond_master() { :; }
-  function install_ifcfg_bond_slave() { :; }
+  function install_ifcfg_bonding_master() { :; }
+  function install_ifcfg_bonding_slave() { :; }
 }
 
 function tearDown() {
   :
 }
 
-function test_map_ifcfg_bond_no_opts() {
+function test_map_ifcfg_bonding_no_opts() {
   map_ifcfg_bond
   assertEquals 0 ${?}
 }
 
-function test_map_ifcfg_bond_opts() {
+function test_map_ifcfg_bonding_opts() {
   map_ifcfg_bond
   assertEquals 0 ${?}
 }

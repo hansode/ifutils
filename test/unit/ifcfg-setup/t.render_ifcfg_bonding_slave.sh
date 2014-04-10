@@ -22,22 +22,22 @@ function tearDown() {
   :
 }
 
-function test_render_ifcfg_bond_slave_no_opts() {
+function test_render_ifcfg_bonding_slave_no_opts() {
   local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 MASTER=${master}
 SLAVE=yes"
-  assertEquals "${body}" "$(render_ifcfg_bond_slave)"
+  assertEquals "${body}" "$(render_ifcfg_bonding_slave)"
 }
 
-function test_render_ifcfg_bond_slave_opts() {
+function test_render_ifcfg_bonding_slave_opts() {
   local body="DEVICE=${device}
 BOOTPROTO=none
 ONBOOT=yes
 MASTER=${master}
 SLAVE=yes"
-  assertEquals "${body}" "$(render_ifcfg_bond_slave ${device})"
+  assertEquals "${body}" "$(render_ifcfg_bonding_slave ${device})"
 }
 
 ## shunit2
