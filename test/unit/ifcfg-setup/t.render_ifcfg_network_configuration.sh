@@ -82,6 +82,14 @@ BRIDGE=${bridge}"
   assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} bridge=${bridge})"
 }
 
+function test_render_ifcfg_network_configuration_opts_physdev() {
+  local physdev=eth0
+  local body="BOOTPROTO=none
+ONBOOT=yes
+PHYSDEV=${physdev}"
+  assertEquals "${body}" "$(render_ifcfg_network_configuration ${device} physdev=${physdev})"
+}
+
 function test_render_ifcfg_network_configuration_opts_ip() {
   local ip=192.0.2.10
   local body="BOOTPROTO=static
