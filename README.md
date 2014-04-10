@@ -1,9 +1,9 @@
-ifcfg-setup
-===========
+ifutils
+=======
 
-[![Build Status](https://travis-ci.org/hansode/ifcfg-setup.svg)](https://travis-ci.org/hansode/ifcfg-setup)
+[![Build Status](https://travis-ci.org/hansode/ifutils.svg)](https://travis-ci.org/hansode/ifutils)
 
-`ifcfg-setup` is a utility and framework for `/etc/sysconfig/network-scripts/ifcfg-X` file management
+`ifutils` is a utility and framework for `/etc/sysconfig/network-scripts/ifcfg-X` file management
 
 Requirements
 ------------
@@ -14,7 +14,7 @@ Installation
 ------------
 
 ```
-$ git clone https://github.com/hansode/ifcfg-setup.git
+$ git clone https://github.com/hansode/ifutils.git
 ```
 
 Usage
