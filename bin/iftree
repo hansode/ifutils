@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# requires:
+#  bash
+#  sed, ls
+#
+# usage:
+#  iftree [ NIC ] [ NIC ] ...
+#
+# url:
+#  https://github.com/hansode/ifutils
+#
+
+IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX:-/sys/class/net}
+
+function device_type() {
+  local device=${1}
+  [[ -n "${device}" ]] || return 1
+  local type=ethernet
+
+  if   [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bridge ]]; then
+    type=bridge
+  elif [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding ]]; then
+    type=bonding
+  elif [[ -f ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/tun_flags ]]; then
+    type=tap
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/ifindex)" != "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink)" ]]; then
+    type=vlan
+  elif [[ "$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/type)" == 772 ]]; then
+    type=lo
+  fi
+
+  echo ${type}
+}
+
+function indent() {
+  sed "s,^,  ," < /dev/stdin
+}
+
+function show_device() {
+  local device=${1}
+  [[ -n "${device}" ]] || return 1
+
+  echo -n "device=${device} "
+  local type=$(device_type ${device})
+
+  echo -n "type=${type} "
+  case "${type}" in
+    ethernet|lo|tap)
+      echo
+      ;;
+    bridge)
+      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/)"
+      echo brif=\"${brif}\"
+
+      local slave
+      for slave in ${brif}; do
+        show_device ${slave} | indent
+      done
+      ;;
+    bonding)
+      local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves)"
+      echo slaves=\"${slaves}\"
+
+      local slave
+      for slave in ${slaves}; do
+        show_device ${slave} | indent
+      done
+      ;;
+    vlan)
+      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink) master i
+
+      for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
+        [[ "$(< ${i})" == "${iflink}" ]] || continue
+        master=$(basename ${i%%/ifindex})
+      done
+      echo master=${master}
+
+      if [[ -n "${master}" ]]; then
+        show_device ${master} | indent
+      fi
+      ;;
+    *)
+      echo
+      ;;
+  esac
+}
+
+function iftree_cli() {
+  local device
+
+  if [[ ${#} != 0 ]]; then
+    while [[ "${1}" ]]; do
+      device=${1}; shift
+      [[ -f "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}" ]] && continue
+      show_device ${device}
+    done
+  else
+    for device in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
+      [[ -L "${device}" ]] || continue
+      show_device $(basename ${device})
+    done
+  fi
+}
+
+if [[ "${BASH_SOURCE[0]##*/}" == "iftree" ]]; then
+  set -e
+  set -o pipefail
+
+  iftree_cli "${@}"
+fi
