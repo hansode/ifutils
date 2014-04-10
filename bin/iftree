@@ -43,8 +43,9 @@ function show_device() {
   [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device} ]] || return 1
 
   echo -n "device=${device} "
-  local type=$(device_type ${device})
+  echo -n "mac=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/address) "
 
+  local type=$(device_type ${device})
   echo -n "type=${type} "
   case "${type}" in
     ethernet|lo|tap)
