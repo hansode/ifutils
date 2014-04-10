@@ -15,11 +15,16 @@ IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=./sys.${$}
 ## functions
 
 function setUp() {
+  local device=eth0
+  mkdir -p ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}
+
   function show_device() { echo show_device "${@}"; }
 }
 
 function tearDown() {
-  :
+  if [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX} ]]; then
+    rm -r  ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}
+  fi
 }
 
 function test_iftree_cli_no_opts() {
@@ -33,6 +38,13 @@ function test_iftree_cli_opts() {
   local device=eth0
 
   iftree_cli "${device}"
+  assertEquals 0 ${?}
+}
+
+function test_iftree_cli_sysfs_not_found() {
+  IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=
+
+  iftree_cli
   assertEquals 0 ${?}
 }
 
