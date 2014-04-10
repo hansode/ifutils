@@ -10,8 +10,8 @@
 
 ## variables
 
-declare device=eth0
-IFCFG_PATH_PREFIX=ifcfg-eth9
+declare device=bond0
+IFCFG_PATH_PREFIX=ifcfg-bond9
 
 ## functions
 
@@ -23,13 +23,13 @@ function tearDown() {
   :
 }
 
-function test_install_ifcfg_bond_slave_no_opts() {
-  install_ifcfg_bond_slave
+function test_install_ifcfg_bonding_master_no_opts() {
+  install_ifcfg_bonding_master
   assertEquals 0 ${?}
 }
 
-function test_install_ifcfg_bond_slave_opts() {
-  install_ifcfg_bond_slave ${device}
+function test_install_ifcfg_bonding_master_opts() {
+  install_ifcfg_bonding_master ${device}
   assertEquals 0 ${?}
 }
 

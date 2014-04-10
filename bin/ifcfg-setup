@@ -17,7 +17,7 @@ IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
 IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
 IFCFG_VLAN_CONF_PATH=${IFCFG_VLAN_CONF_PATH:-/etc/sysconfig/network}
 
-IFCFG_BOND_PARAMS="
+IFCFG_BONDING_PARAMS="
   max_bonds
   num_grat_arp
   num_unsol_na
@@ -154,18 +154,18 @@ function configure_bonding_conf() {
 
 ### 1:master
 
-function render_ifcfg_bond_master() {
+function render_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset onboot mode ${IFCFG_BOND_PARAMS}
+  unset onboot mode ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  local bond_opts="mode=${mode:-1}"
-  local bond_params=${IFCFG_BOND_PARAMS}
+  local bonding_opts="mode=${mode:-1}"
+  local bonding_params=${IFCFG_BONDING_PARAMS}
 
   local __param
-  for __param in ${bond_params}; do
+  for __param in ${bonding_params}; do
     eval "
-      [[ -z "\$${__param}" ]] || bond_opts=\"\${bond_opts} \${__param}=\$${__param}\"
+      [[ -z "\$${__param}" ]] || bonding_opts=\"\${bonding_opts} \${__param}=\$${__param}\"
     "
   done
 
@@ -173,25 +173,25 @@ function render_ifcfg_bond_master() {
    device=${device}
 
   beautify_config_body <<-EOS
-	BONDING_OPTS="${bond_opts}"
+	BONDING_OPTS="${bonding_opts}"
 	EOS
 }
 
 ### 2:master
 
-function install_ifcfg_bond_master() {
+function install_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset onboot mode ${IFCFG_BOND_PARAMS}
+  unset onboot mode ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_master ${device} \
+  render_ifcfg_bonding_master ${device} \
    mode=${mode} "${@}" \
    | install_ifcfg_file ${device}
 }
 
 ### 1:slave
 
-function render_ifcfg_bond_slave() {
+function render_ifcfg_bonding_slave() {
   local device=${1:-eth0}
   unset onboot master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
@@ -207,12 +207,12 @@ function render_ifcfg_bond_slave() {
 
 ### 2:slave
 
-function install_ifcfg_bond_slave() {
+function install_ifcfg_bonding_slave() {
   local device=${1:-eth0}
   unset onboot master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
-  render_ifcfg_bond_slave ${device} \
+  render_ifcfg_bonding_slave ${device} \
    master=${master} \
    | install_ifcfg_file ${device}
 }
@@ -221,12 +221,12 @@ function install_ifcfg_bond_slave() {
 
 function map_ifcfg_bond() {
   local device=${1:-bond0}
-  unset onboot mode master slave ${IFCFG_BOND_PARAMS}
+  unset onboot mode master slave ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
-  install_ifcfg_bond_master ${device} mode=${mode} "${@}"
-  install_ifcfg_bond_slave  ${slave}  master=${device}
+  install_ifcfg_bonding_master ${device} mode=${mode} "${@}"
+  install_ifcfg_bonding_slave  ${slave}  master=${device}
 }
 
 ## net/bridge
