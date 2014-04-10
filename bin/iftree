@@ -87,6 +87,8 @@ function show_device() {
 }
 
 function iftree_cli() {
+  [[ -d "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}" ]] || return 0
+
   local device
 
   if [[ ${#} != 0 ]]; then
@@ -97,7 +99,7 @@ function iftree_cli() {
     done
   else
     for device in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*; do
-      [[ -L "${device}" ]] || continue
+      [[ -f "${device}" ]] && continue
       show_device $(basename ${device})
     done
   fi
