@@ -40,6 +40,7 @@ function indent() {
 function show_device() {
   local device=${1}
   [[ -n "${device}" ]] || return 1
+  [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device} ]] || return 1
 
   echo -n "device=${device} "
   local type=$(device_type ${device})
