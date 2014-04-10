@@ -381,5 +381,8 @@ function ifcfg_cli() {
 }
 
 if [[ "${BASH_SOURCE[0]##*/}" == "ifcfg-setup" ]]; then
+  set -e
+  set -o pipefail
+
   ifcfg_cli "${@}"
 fi
