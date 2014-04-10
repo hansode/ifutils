@@ -44,7 +44,9 @@ function setUp() {
 }
 
 function tearDown() {
-  rm -r ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}
+  if [[ -d ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX} ]]; then
+    rm -r  ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}
+  fi
 }
 
 function test_show_device_no_opts() {
@@ -94,6 +96,13 @@ function test_show_device_lo() {
 
   show_device ${device}
   assertEquals 0 ${?}
+}
+
+function test_show_device_not_exists() {
+  local device=unknown
+
+  show_device ${device}
+  assertNotEquals 0 ${?}
 }
 
 ## shunit2
