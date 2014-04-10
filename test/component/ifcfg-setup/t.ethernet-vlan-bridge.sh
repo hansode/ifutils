@@ -45,7 +45,7 @@ function test_ethernet_vlan_bridge() {
 
   for i in {0..5}; do
     ifindex=$((${i} + 1))
-    map_ifcfg_bond bond$((${i} / 2)) slave=eth${ifindex} mode=${bonding_mode} \
+    map_ifcfg_bonding bond$((${i} / 2)) slave=eth${ifindex} mode=${bonding_mode} \
      primary=eth$(gen_priimary ${i}) miimon=100 updelay=10000
     assertEquals 0 ${?}
   done

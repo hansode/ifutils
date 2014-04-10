@@ -219,7 +219,7 @@ function install_ifcfg_bonding_slave() {
 
 ### 3:
 
-function map_ifcfg_bond() {
+function map_ifcfg_bonding() {
   local device=${1:-bond0}
   unset onboot mode master slave ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"

@@ -23,13 +23,13 @@ function tearDown() {
   :
 }
 
-function test_map_ifcfg_bonding_no_opts() {
-  map_ifcfg_bond
+function test_map_ifcfg_bonding() {
+  map_ifcfg_bonding
   assertEquals 0 ${?}
 }
 
-function test_map_ifcfg_bonding_opts() {
-  map_ifcfg_bond
+function test_map_ifcfg_bonding() {
+  map_ifcfg_bonding
   assertEquals 0 ${?}
 }
 
