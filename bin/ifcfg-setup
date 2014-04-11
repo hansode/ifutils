@@ -158,7 +158,8 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset onboot mode ${IFCFG_BONDING_PARAMS}
+  unset onboot
+  unset mode ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bonding_opts="mode=${mode:-1}"
@@ -183,7 +184,8 @@ function render_ifcfg_bonding_master() {
 
 function install_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset onboot mode ${IFCFG_BONDING_PARAMS}
+  unset onboot
+  unset mode ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_master ${device} \
@@ -195,7 +197,8 @@ function install_ifcfg_bonding_master() {
 
 function render_ifcfg_bonding_slave() {
   local device=${1:-eth0}
-  unset onboot master
+  unset onboot
+  unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -211,7 +214,8 @@ function render_ifcfg_bonding_slave() {
 
 function install_ifcfg_bonding_slave() {
   local device=${1:-eth0}
-  unset onboot master
+  unset onboot
+  unset master
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_slave ${device} \
@@ -223,7 +227,9 @@ function install_ifcfg_bonding_slave() {
 
 function map_ifcfg_bonding() {
   local device=${1:-bond0}
-  unset onboot mode master slave ${IFCFG_BONDING_PARAMS}
+  unset onboot
+  unset mode ${IFCFG_BONDING_PARAMS}
+  unset master slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
@@ -237,7 +243,7 @@ function map_ifcfg_bonding() {
 
 function render_ifcfg_bridge() {
   local device=${1:-br0}
-  unset onboot mac dns1 dns2
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -248,7 +254,7 @@ function render_ifcfg_bridge() {
 
 function install_ifcfg_bridge() {
   local device=${1:-br0}
-  unset onboot mac dns1 dns2
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bridge ${device} \
@@ -260,7 +266,8 @@ function install_ifcfg_bridge() {
 
 function map_ifcfg_bridge() {
   local device=${1:-br0}
-  unset onboot slave
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
+  unset slave
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${device} "${@}"
@@ -293,7 +300,8 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw mac dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
+  unset physdev
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -309,7 +317,8 @@ function render_ifcfg_vlan() {
 
 function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw mac dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
+  unset physdev
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -322,7 +331,8 @@ function install_ifcfg_vlan() {
 
 function map_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot physdev
+  unset onboot
+  unset physdev
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_vlan_conf
@@ -341,7 +351,7 @@ function map_ifcfg_vlan() {
 
 function render_ifcfg_tap() {
   local device=${1:-tap0}
-  unset onboot mac dns1 dns2 bridge
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -352,7 +362,7 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local device=${1:-tap0}
-  unset onboot mac dns1 dns2 bridge
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${device} \
