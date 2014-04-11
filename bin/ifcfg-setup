@@ -302,7 +302,6 @@ function render_ifcfg_vlan() {
   local device=${1:-vlan1000}
   unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   unset physdev
-  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -319,7 +318,6 @@ function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
   unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   unset physdev
-  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_vlan ${device} \
