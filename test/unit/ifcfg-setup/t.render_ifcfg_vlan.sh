@@ -36,6 +36,15 @@ ONBOOT=yes"
   assertEquals "${body}" "$(render_ifcfg_vlan ${device})"
 }
 
+function test_render_ifcfg_vlan_opts_physdev() {
+  local physdev=eth0
+  local body="DEVICE=${device}
+BOOTPROTO=none
+ONBOOT=yes
+PHYSDEV=${physdev}"
+  assertEquals "${body}" "$(render_ifcfg_vlan ${device} physdev=${physdev})"
+}
+
 ## shunit2
 
 . ${shunit2_file}

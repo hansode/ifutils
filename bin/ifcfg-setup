@@ -70,7 +70,7 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot device type ip mask net bcast gw mac dns1 dns2 bridge physdev
+  unset onboot device type ip mask net bcast gw mac dns1 dns2 bridge
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -89,7 +89,6 @@ function render_ifcfg_network_configuration() {
 	$([[ -z "${dns1}"    ]] || echo "DNS1=${dns1}")
 	$([[ -z "${dns2}"    ]] || echo "DNS2=${dns2}")
 	$([[ -z "${bridge}"  ]] || echo "BRIDGE=${bridge}")
-	$([[ -z "${physdev}" ]] || echo "PHYSDEV=${physdev}")
 	EOS
 
   case ${bootproto} in
@@ -297,6 +296,10 @@ function render_ifcfg_vlan() {
 
   render_ifcfg_network_configuration "${@}" \
    device=${device}
+
+  beautify_config_body <<-EOS
+	$([[ -z "${physdev}" ]] || echo "PHYSDEV=${physdev}")
+	EOS
 }
 
 ### 2:
