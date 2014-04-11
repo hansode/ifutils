@@ -116,7 +116,8 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset onboot ip mask net bcast gw hw dns1 dns2 bridge
+  unset onboot ip mask net bcast gw dns1 dns2 bridge
+  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -131,7 +132,8 @@ function render_ifcfg_ethernet() {
 
 function install_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset onboot ip mask net bcast gw hw dns1 dns2 bridge
+  unset onboot ip mask net bcast gw dns1 dns2 bridge
+  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_ethernet ${device} \
@@ -292,7 +294,8 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw hw dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw dns1 dns2 bridge physdev
+  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -307,7 +310,8 @@ function render_ifcfg_vlan() {
 
 function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw hw dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw dns1 dns2 bridge physdev
+  unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_vlan ${device} \
