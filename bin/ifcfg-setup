@@ -116,7 +116,7 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset onboot ip mask net bcast gw dns1 dns2 bridge
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -132,13 +132,12 @@ function render_ifcfg_ethernet() {
 
 function install_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset onboot ip mask net bcast gw dns1 dns2 bridge
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_ethernet ${device} \
-   ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} \
-   hw=${hw} dns1=${dns1} dns2=${dns2} bridge=${bridge} \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -188,7 +187,7 @@ function install_ifcfg_bonding_master() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_master ${device} \
-   mode=${mode} "${@}" \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -216,7 +215,7 @@ function install_ifcfg_bonding_slave() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_slave ${device} \
-   master=${master} \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -253,7 +252,7 @@ function install_ifcfg_bridge() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bridge ${device} \
-   mac=${mac} dns1=${dns1} dns2=${dns2} \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -294,7 +293,7 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge physdev
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -310,14 +309,12 @@ function render_ifcfg_vlan() {
 
 function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset onboot ip mask net bcast gw dns1 dns2 bridge physdev
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge physdev
   unset hw
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_vlan ${device} \
-   ip=${ip} mask=${mask} net=${net} bcast=${bcast} gw=${gw} \
-   hw=${hw} dns1=${dns1} dns2=${dns2} bridge=${bridge} \
-   physdev=${physdev} \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
@@ -359,7 +356,7 @@ function install_ifcfg_tap() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${device} \
-   mac=${mac} dns1=${dns1} dns2=${dns2} bridge=${bridge} \
+   "${@}" \
    | install_ifcfg_file ${device}
 }
 
