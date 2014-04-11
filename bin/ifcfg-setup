@@ -70,7 +70,8 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset onboot device type ip mask net bcast gw mac dns1 dns2 bridge
+  unset device type
+  unset onboot ip mask net bcast gw mac dns1 dns2 bridge
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
