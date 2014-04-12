@@ -2,7 +2,6 @@
 #
 # requires:
 #  bash
-#  ls
 #
 # usage:
 #  iftree [ NIC ] [ NIC ] ...
@@ -53,7 +52,13 @@ function show_device() {
       echo
       ;;
     bridge)
-      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/)"
+      local brif="$(
+        local i
+        for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/*; do
+          [[ -a "${i}" ]] || continue
+          echo ${i##*/}
+        done
+      )"
       echo brif=\"${brif}\"
 
       local slave
