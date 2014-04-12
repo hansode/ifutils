@@ -2,7 +2,7 @@
 #
 # requires:
 #  bash
-#  sed, ls
+#  ls
 #
 # usage:
 #  iftree [ NIC ] [ NIC ] ...
@@ -34,7 +34,8 @@ function device_type() {
 }
 
 function indent() {
-  sed "s,^,  ," < /dev/stdin
+  local line="$(< /dev/stdin)"
+  echo "${line/#/  }"
 }
 
 function show_device() {
