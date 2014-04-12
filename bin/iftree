@@ -52,8 +52,7 @@ function show_device() {
       echo
       ;;
     bridge)
-      local brif="$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/)"
-      echo brif=\"${brif}\"
+      echo brif=\"$(ls ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/)\"
 
       local slave
       for slave in ${brif}; do
@@ -61,8 +60,7 @@ function show_device() {
       done
       ;;
     bonding)
-      local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves)"
-      echo slaves=\"${slaves}\"
+      echo slaves=\"$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves)\"
 
       local slave
       for slave in ${slaves}; do
