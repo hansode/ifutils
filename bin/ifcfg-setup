@@ -51,7 +51,7 @@ function install_ifcfg_file() {
 }
 
 function beautify_config_body() {
-  cat | egrep -v '^#|^$'
+  egrep -v '^#|^$' </dev/stdin
 
   # ignore exit-code 1 of egrep
   # > $ echo | egrep -v '^#|^$'; echo $?
