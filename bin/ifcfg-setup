@@ -279,6 +279,7 @@ function map_ifcfg_bridge() {
 
 function configure_vlan_conf() {
   local line
+
   while read line; do
     set ${line}
     config_line_in_file "${IFCFG_VLAN_CONF_PATH}" "${line}"
@@ -377,7 +378,6 @@ function usage() {
 
 function ifcfg_cli() {
   local cmd=${1} type=${2}; shift 2
-
   local function=${cmd}_ifcfg_${type}
 
   declare -f ${function} >/dev/null || { usage; return 1; }
