@@ -279,11 +279,9 @@ function map_ifcfg_bridge() {
 
 function configure_vlan_conf() {
   local line
-
-  local config_path=${IFCFG_VLAN_CONF_PATH}
   while read line; do
     set ${line}
-    config_line_in_file ${config_path} "${line}"
+    config_line_in_file "${IFCFG_VLAN_CONF_PATH}" "${line}"
   done < <(beautify_config_body <<-EOS
 	VLAN=yes
 	VLAN_NAME_TYPE=VLAN_PLUS_VID_NO_PAD
