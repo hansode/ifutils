@@ -76,7 +76,8 @@ function show_device() {
       done
       ;;
     vlan)
-      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink) master i
+      local master i
+      local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink)
 
       for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
         [[ "$(< ${i})" == "${iflink}" ]] || continue
