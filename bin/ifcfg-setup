@@ -150,10 +150,7 @@ function install_ifcfg_ethernet() {
 function configure_bonding_conf() {
   local device=${1:-bond0}
 
-  local config_path=${IFCFG_BONDING_CONF_PATH}
-  local entry="alias ${device} bonding"
-
-  config_line_in_file ${config_path} "${entry}"
+  config_line_in_file "${IFCFG_BONDING_CONF_PATH}" "alias ${device} bonding"
 }
 
 ### 1:master
@@ -273,11 +270,7 @@ function map_ifcfg_bridge() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${device} "${@}"
-
-  local config_path=$(gen_ifcfg_path ${slave})
-  local entry="BRIDGE=${device}"
-
-  config_line_in_file ${config_path} "${entry}"
+  config_line_in_file "$(gen_ifcfg_path ${slave})" "BRIDGE=${device}"
 }
 
 ## net/8021q
@@ -336,13 +329,8 @@ function map_ifcfg_vlan() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_vlan_conf
-
   install_ifcfg_vlan ${device}
-
-  local config_path=$(gen_ifcfg_path ${device})
-  local entry="PHYSDEV=${physdev}"
-
-  config_line_in_file ${config_path} "${entry}"
+  config_line_in_file "$(gen_ifcfg_path ${device})" "PHYSDEV=${physdev}"
 }
 
 ## net/tap
