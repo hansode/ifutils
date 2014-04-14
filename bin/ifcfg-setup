@@ -94,7 +94,7 @@ function render_ifcfg_network_configuration() {
 	$([[ -z "${bridge}"  ]] || echo "BRIDGE=${bridge}")
 	EOS
 
-  case ${bootproto} in
+  case "${bootproto}" in
     static)
       beautify_config_body <<-EOS
 	IPADDR=${ip}
