@@ -52,6 +52,7 @@ Device Types
 ------------
 
 + ethernet
++ bonding
 + bridge
 + vlan
 + tap
@@ -59,15 +60,16 @@ Device Types
 Options
 -------
 
++ onboot
 + ip
-+ mac
-+ hw
 + mask
 + net
 + bcast
 + gw
++ mac
 + dns1
 + dns2
++ bridge
 
 License
 -------
