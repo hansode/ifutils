@@ -3,7 +3,8 @@ ifutils
 
 [![Build Status](https://travis-ci.org/hansode/ifutils.svg)](https://travis-ci.org/hansode/ifutils)
 
-`ifutils` is a utility and framework for `/etc/sysconfig/network-scripts/ifcfg-X` file management
++ `ifcfg-setup` is a utility and framework for `/etc/sysconfig/network-scripts/ifcfg-X` file management
++ `iftree` shows networking interface hierarchy
 
 Requirements
 ------------
