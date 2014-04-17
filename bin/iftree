@@ -2,6 +2,7 @@
 #
 # requires:
 #  bash
+#  sed
 #
 # usage:
 #  iftree [ NIC ] [ NIC ] ...
@@ -129,6 +130,19 @@ function vlan_seq_show() {
   fi
 
   echo "${__vlan_seq_show_cache}"
+}
+
+function show_vlan_map() {
+  local line local cur=0
+
+  while read line; do
+    cur=$((${cur} + 1))
+    # 1..2 are vlan header
+    [[ "${cur}" > 2 ]] || continue
+
+    set ${line//|/ }
+    echo device=${1} vlan_id=${2} physdev=${3}
+  done < <(vlan_seq_show)
 }
 
 function iftree_cli() {
