@@ -11,6 +11,7 @@
 #
 
 IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX:-/sys/class/net}
+IFTREE_PROCFS_NET_VLAN_CONFIG_PATH=${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH:-/proc/net/vlan/config}
 
 function device_type() {
   local device=${1}
@@ -93,6 +94,13 @@ function show_device() {
       echo
       ;;
   esac
+}
+
+function show_vlan_config() {
+  [[ -f "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
+  [[ -r "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
+
+  echo "$(< ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH})"
 }
 
 function iftree_cli() {
