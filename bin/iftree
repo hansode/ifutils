@@ -96,9 +96,33 @@ function show_device() {
   esac
 }
 
-function show_vlan_config() {
+
+function vlan_seq_show() {
   [[ -f "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
   [[ -r "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
+
+  # linux/net/8021q/vlanproc.c
+  #
+  # /proc/net/vlan/config
+  #
+  # + 1..2: header
+  # + 3.. : body
+  #
+  # ----------------------------------------
+  #  1: VLAN Dev name    | VLAN ID
+  #  2: Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
+  #  3: vlan112        | 112  | p1p1
+  #  4: vlan122        | 122  | p1p1
+  #  5: vlan2901       | 2901  | em1
+  #  6: vlan2902       | 2902  | em1
+  #  7: vlan2903       | 2903  | em1
+  #  8: vlan2904       | 2904  | em1
+  #  9: vlan2905       | 2905  | em1
+  # 10: vlan2906       | 2906  | em1
+  # 11: vlan2907       | 2907  | em1
+  # 12: vlan2908       | 2908  | p1p1
+  # 13: vlan3006       | 3006  | em1
+  # ----------------------------------------
 
   echo "$(< ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH})"
 }

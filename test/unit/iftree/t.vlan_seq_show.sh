@@ -38,22 +38,22 @@ function tearDown() {
   fi
 }
 
-function test_show_vlan_config_file_exists() {
-  show_vlan_config
+function test_vlan_seq_show_file_exists() {
+  vlan_seq_show
   assertEquals 0 ${?}
 }
 
-function test_show_vlan_config_file_not_found() {
+function test_vlan_seq_show_file_not_found() {
   rm -f ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}
 
-  show_vlan_config
+  vlan_seq_show
   assertEquals 0 ${?}
 }
 
-function test_show_vlan_config_file_non_root() {
+function test_vlan_seq_show_file_non_root() {
   chmod -r ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}
 
-  show_vlan_config
+  vlan_seq_show
   assertEquals 0 ${?}
 }
 
