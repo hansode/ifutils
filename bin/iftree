@@ -54,11 +54,11 @@ function show_device() {
       ;;
     ethernet|tap)
       local vlanifs="$(
-        local line
+        local line=
         while read line; do
           [[ "${line}" =~ "physdev=${device}" ]] || continue
 
-          local i
+          local i=
           for i in ${line}; do
             [[ "${i}" =~ "device=" ]] || continue
             echo ${i/#device=/}
@@ -67,14 +67,14 @@ function show_device() {
       )"
       echo vlanifs=\"${vlanifs}\"
 
-      local slave
+      local slave=
       for slave in ${vlanifs}; do
         show_device ${slave} | indent
       done
       ;;
     bridge)
       local brif="$(
-        local i
+        local i=
         for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/brif/*; do
           [[ -a "${i}" ]] || continue
           echo ${i##*/}
@@ -82,7 +82,7 @@ function show_device() {
       )"
       echo brif=\"${brif}\"
 
-      local slave
+      local slave=
       for slave in ${brif}; do
         show_device ${slave} | indent
       done
@@ -91,13 +91,13 @@ function show_device() {
       local slaves="$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/bonding/slaves)"
       echo slaves=\"${slaves}\"
 
-      local slave
+      local slave=
       for slave in ${slaves}; do
         show_device ${slave} | indent
       done
       ;;
     vlan)
-      local master i
+      local master= i=
       local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink)
 
       for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
@@ -148,7 +148,7 @@ function vlan_seq_show() {
 }
 
 function show_vlan_map() {
-  local line local cur=0
+  local line= cur=0
 
   while read line; do
     cur=$((${cur} + 1))
@@ -163,7 +163,7 @@ function show_vlan_map() {
 function iftree_cli() {
   [[ -d "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}" ]] || return 0
 
-  local device
+  local device=
 
   if [[ ${#} != 0 ]]; then
     while [[ "${1}" ]]; do
@@ -182,6 +182,7 @@ function iftree_cli() {
 if [[ "${BASH_SOURCE[0]##*/}" == "iftree" ]]; then
   set -e
   set -o pipefail
+  set -u
 
   iftree_cli "${@}"
 fi
