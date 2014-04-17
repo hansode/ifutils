@@ -2,7 +2,6 @@
 #
 # requires:
 #  bash
-#  sed
 #
 # usage:
 #  iftree [ NIC ] [ NIC ] ...
@@ -50,8 +49,28 @@ function show_device() {
   local type=$(device_type ${device})
   echo -n "type=${type} "
   case "${type}" in
-    ethernet|lo|tap)
+    lo)
       echo
+      ;;
+    ethernet|tap)
+      local vlanifs="$(
+        local line
+        while read line; do
+          [[ "${line}" =~ "physdev=${device}" ]] || continue
+
+          local i
+          for i in ${line}; do
+            [[ "${i}" =~ "device=" ]] || continue
+            echo ${i/#device=/}
+          done
+        done < <(show_vlan_map)
+      )"
+      echo vlanifs=\"${vlanifs}\"
+
+      local slave
+      for slave in ${vlanifs}; do
+        show_device ${slave} | indent
+      done
       ;;
     bridge)
       local brif="$(
@@ -86,10 +105,6 @@ function show_device() {
         master=$(basename ${i%%/ifindex})
       done
       echo master=${master}
-
-      if [[ -n "${master}" ]]; then
-        show_device ${master} | indent
-      fi
       ;;
     *)
       echo

@@ -17,7 +17,7 @@ IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=./sys.${$}
 function setUp() {
   local device index=0
 
-  for device in eth0 br0 bond0 tap0 vlan0 lo; do
+  for device in eth0 br0 bond0 tap0 vlan0 vlan1 vlan2 lo; do
     mkdir -p ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}
     echo ${index} > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/ifindex
     echo ${index} > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink
@@ -38,10 +38,24 @@ function setUp() {
   touch ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/tun_flags
 
   device=vlan0
-  echo 1 > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink
+  echo 0 > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink
+
+  device=vlan1
+  echo 0 > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink
+
+  device=vlan2
+  echo 0 > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink
 
   device=lo
   echo 772 > ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/type
+
+  function show_vlan_map() {
+    cat <<-EOS
+	device=vlan0 vlan_id=0 physdev=eth0
+	device=vlan1 vlan_id=1 physdev=eth0
+	device=vlan2 vlan_id=2 physdev=eth0
+	EOS
+  }
 }
 
 function tearDown() {
