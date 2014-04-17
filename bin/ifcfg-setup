@@ -17,24 +17,24 @@ IFCFG_PATH_PREFIX=${IFCFG_PATH_PREFIX:-/etc/sysconfig/network-scripts/ifcfg}
 IFCFG_BONDING_CONF_PATH=${IFCFG_BONDING_CONF_PATH:-/etc/modprobe.d/bonding.conf}
 IFCFG_VLAN_CONF_PATH=${IFCFG_VLAN_CONF_PATH:-/etc/sysconfig/network}
 
-IFCFG_NETWORKING_PARAMS="onboot ip mask net bcast gw mac dns1 dns2 bridge"
+IFCFG_NETWORKING_PARAMS="onboot= ip= mask= net= bcast= gw= mac= dns1= dns2= bridge="
 
 IFCFG_BONDING_PARAMS="
-  max_bonds
-  num_grat_arp
-  num_unsol_na
-  miimon
-  updelay
-  downdelay
-  use_carrier
-  primary
-  lacp_rate
-  ad_select
-  xmit_hash_policy
-  arp_interval
-  arp_ip_target
-  arp_validate
-  fail_over_mac
+  max_bonds=
+  num_grat_arp=
+  num_unsol_na=
+  miimon=
+  updelay=
+  downdelay=
+  use_carrier=
+  primary=
+  lacp_rate=
+  ad_select=
+  xmit_hash_policy=
+  arp_interval=
+  arp_ip_target=
+  arp_validate=
+  fail_over_mac=
 "
 
 function gen_ifcfg_path() {
@@ -72,8 +72,8 @@ function config_line_in_file() {
 }
 
 function render_ifcfg_network_configuration() {
-  unset device type
-  unset ${IFCFG_NETWORKING_PARAMS}
+  local device= type=
+  local ${IFCFG_NETWORKING_PARAMS}
   # don't use "shift" here
   [[ ${#} == 0 ]] || eval local "${@}"
 
@@ -118,8 +118,8 @@ function render_ifcfg_network_configuration() {
 
 function render_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset hw
+  local ${IFCFG_NETWORKING_PARAMS}
+  local hw=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -134,8 +134,8 @@ function render_ifcfg_ethernet() {
 
 function install_ifcfg_ethernet() {
   local device=${1:-eth0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset hw
+  local ${IFCFG_NETWORKING_PARAMS}
+  local hw=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_ethernet ${device} \
@@ -157,14 +157,14 @@ function configure_bonding_conf() {
 
 function render_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset mode ${IFCFG_BONDING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
+  local mode= ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   local bonding_opts="mode=${mode:-1}"
-  local bonding_params=${IFCFG_BONDING_PARAMS}
+  local bonding_params=${IFCFG_BONDING_PARAMS//=/}
 
-  local __param
+  local __param=
   for __param in ${bonding_params}; do
     eval "
       [[ -z "\$${__param}" ]] || bonding_opts=\"\${bonding_opts} \${__param}=\$${__param}\"
@@ -183,8 +183,8 @@ function render_ifcfg_bonding_master() {
 
 function install_ifcfg_bonding_master() {
   local device=${1:-bond0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset mode ${IFCFG_BONDING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
+  local mode= ${IFCFG_BONDING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_master ${device} \
@@ -196,8 +196,8 @@ function install_ifcfg_bonding_master() {
 
 function render_ifcfg_bonding_slave() {
   local device=${1:-eth0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset master
+  local ${IFCFG_NETWORKING_PARAMS}
+  local master=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -213,8 +213,8 @@ function render_ifcfg_bonding_slave() {
 
 function install_ifcfg_bonding_slave() {
   local device=${1:-eth0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset master
+  local ${IFCFG_NETWORKING_PARAMS}
+  local master=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bonding_slave ${device} \
@@ -226,9 +226,9 @@ function install_ifcfg_bonding_slave() {
 
 function map_ifcfg_bonding() {
   local device=${1:-bond0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset mode ${IFCFG_BONDING_PARAMS}
-  unset master slave
+  local ${IFCFG_NETWORKING_PARAMS}
+  local mode= ${IFCFG_BONDING_PARAMS}
+  local master= slave=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_bonding_conf    ${device}
@@ -242,7 +242,7 @@ function map_ifcfg_bonding() {
 
 function render_ifcfg_bridge() {
   local device=${1:-br0}
-  unset ${IFCFG_NETWORKING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -253,7 +253,7 @@ function render_ifcfg_bridge() {
 
 function install_ifcfg_bridge() {
   local device=${1:-br0}
-  unset ${IFCFG_NETWORKING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_bridge ${device} \
@@ -265,8 +265,8 @@ function install_ifcfg_bridge() {
 
 function map_ifcfg_bridge() {
   local device=${1:-br0}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset slave
+  local ${IFCFG_NETWORKING_PARAMS}
+  local slave=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   install_ifcfg_bridge ${device} "${@}"
@@ -278,7 +278,7 @@ function map_ifcfg_bridge() {
 ### 0:
 
 function configure_vlan_conf() {
-  local line
+  local line=
 
   while read line; do
     set ${line}
@@ -294,8 +294,8 @@ function configure_vlan_conf() {
 
 function render_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset physdev
+  local ${IFCFG_NETWORKING_PARAMS}
+  local physdev=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -310,8 +310,8 @@ function render_ifcfg_vlan() {
 
 function install_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset physdev
+  local ${IFCFG_NETWORKING_PARAMS}
+  local physdev=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_vlan ${device} \
@@ -323,8 +323,8 @@ function install_ifcfg_vlan() {
 
 function map_ifcfg_vlan() {
   local device=${1:-vlan1000}
-  unset ${IFCFG_NETWORKING_PARAMS}
-  unset physdev
+  local ${IFCFG_NETWORKING_PARAMS}
+  local physdev=
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_vlan_conf
@@ -338,7 +338,7 @@ function map_ifcfg_vlan() {
 
 function render_ifcfg_tap() {
   local device=${1:-tap0}
-  unset ${IFCFG_NETWORKING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_network_configuration "${@}" \
@@ -349,7 +349,7 @@ function render_ifcfg_tap() {
 
 function install_ifcfg_tap() {
   local device=${1:-tap0}
-  unset ${IFCFG_NETWORKING_PARAMS}
+  local ${IFCFG_NETWORKING_PARAMS}
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   render_ifcfg_tap ${device} \
@@ -387,6 +387,7 @@ function ifcfg_cli() {
 if [[ "${BASH_SOURCE[0]##*/}" == "ifcfg-setup" ]]; then
   set -e
   set -o pipefail
+  set -u
 
   ifcfg_cli "${@}"
 fi
