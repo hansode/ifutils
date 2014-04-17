@@ -11,6 +11,7 @@
 #
 
 IFTREE_SYSFS_CLASS_NET_PATH_PREFIX=${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX:-/sys/class/net}
+IFTREE_PROCFS_NET_VLAN_CONFIG_PATH=${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH:-/proc/net/vlan/config}
 
 function device_type() {
   local device=${1}
@@ -48,8 +49,28 @@ function show_device() {
   local type=$(device_type ${device})
   echo -n "type=${type} "
   case "${type}" in
-    ethernet|lo|tap)
+    lo)
       echo
+      ;;
+    ethernet|tap)
+      local vlanifs="$(
+        local line
+        while read line; do
+          [[ "${line}" =~ "physdev=${device}" ]] || continue
+
+          local i
+          for i in ${line}; do
+            [[ "${i}" =~ "device=" ]] || continue
+            echo ${i/#device=/}
+          done
+        done < <(show_vlan_map)
+      )"
+      echo vlanifs=\"${vlanifs}\"
+
+      local slave
+      for slave in ${vlanifs}; do
+        show_device ${slave} | indent
+      done
       ;;
     bridge)
       local brif="$(
@@ -84,15 +105,59 @@ function show_device() {
         master=$(basename ${i%%/ifindex})
       done
       echo master=${master}
-
-      if [[ -n "${master}" ]]; then
-        show_device ${master} | indent
-      fi
       ;;
     *)
       echo
       ;;
   esac
+}
+
+__vlan_seq_show_cache=
+function vlan_seq_show() {
+  [[ -f "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
+  [[ -r "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
+
+  # linux/net/8021q/vlanproc.c
+  #
+  # /proc/net/vlan/config
+  #
+  # + 1..2: header
+  # + 3.. : body
+  #
+  # ----------------------------------------
+  #  1: VLAN Dev name    | VLAN ID
+  #  2: Name-Type: VLAN_NAME_TYPE_RAW_PLUS_VID_NO_PAD
+  #  3: vlan112        | 112  | p1p1
+  #  4: vlan122        | 122  | p1p1
+  #  5: vlan2901       | 2901  | em1
+  #  6: vlan2902       | 2902  | em1
+  #  7: vlan2903       | 2903  | em1
+  #  8: vlan2904       | 2904  | em1
+  #  9: vlan2905       | 2905  | em1
+  # 10: vlan2906       | 2906  | em1
+  # 11: vlan2907       | 2907  | em1
+  # 12: vlan2908       | 2908  | p1p1
+  # 13: vlan3006       | 3006  | em1
+  # ----------------------------------------
+
+  if [[ -z "${__vlan_seq_show_cache}" ]]; then
+    __vlan_seq_show_cache="$(< ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH})"
+  fi
+
+  echo "${__vlan_seq_show_cache}"
+}
+
+function show_vlan_map() {
+  local line local cur=0
+
+  while read line; do
+    cur=$((${cur} + 1))
+    # 1..2 are vlan header
+    [[ "${cur}" > 2 ]] || continue
+
+    set ${line//|/ }
+    echo device=${1} vlan_id=${2} physdev=${3}
+  done < <(vlan_seq_show)
 }
 
 function iftree_cli() {
