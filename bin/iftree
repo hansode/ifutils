@@ -96,7 +96,7 @@ function show_device() {
   esac
 }
 
-
+__vlan_seq_show_cache=
 function vlan_seq_show() {
   [[ -f "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
   [[ -r "${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH}" ]] || return 0
@@ -124,7 +124,11 @@ function vlan_seq_show() {
   # 13: vlan3006       | 3006  | em1
   # ----------------------------------------
 
-  echo "$(< ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH})"
+  if [[ -z "${__vlan_seq_show_cache}" ]]; then
+    __vlan_seq_show_cache="$(< ${IFTREE_PROCFS_NET_VLAN_CONFIG_PATH})"
+  fi
+
+  echo "${__vlan_seq_show_cache}"
 }
 
 function iftree_cli() {
