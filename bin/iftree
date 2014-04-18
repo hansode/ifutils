@@ -166,7 +166,7 @@ function iftree_cli() {
   local device=
 
   if [[ ${#} != 0 ]]; then
-    while [[ "${1}" ]]; do
+    while [[ "${1:-}" ]]; do
       device=${1}; shift
       [[ -f "${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}" ]] && continue
       show_device ${device}
