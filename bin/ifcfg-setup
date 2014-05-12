@@ -328,7 +328,7 @@ function map_ifcfg_vlan() {
   shift; [[ ${#} == 0 ]] || eval local "${@}"
 
   configure_vlan_conf
-  install_ifcfg_vlan ${device}
+  install_ifcfg_vlan ${device} "${@}"
   config_line_in_file "$(gen_ifcfg_path ${device})" "PHYSDEV=${physdev}"
 }
 
