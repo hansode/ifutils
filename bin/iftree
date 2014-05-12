@@ -97,14 +97,14 @@ function show_device() {
       done
       ;;
     vlan)
-      local master= i=
+      local physdev= i=
       local iflink=$(< ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/${device}/iflink)
 
       for i in ${IFTREE_SYSFS_CLASS_NET_PATH_PREFIX}/*/ifindex; do
         [[ "$(< ${i})" == "${iflink}" ]] || continue
-        master=$(basename ${i%%/ifindex})
+        physdev=$(basename ${i%%/ifindex})
       done
-      echo master=${master}
+      echo physdev=${physdev}
       ;;
     *)
       echo
